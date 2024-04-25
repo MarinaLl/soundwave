@@ -1,0 +1,13 @@
+{
+    "username": "admin",
+    "email": "admin@example.com",
+    "password": "admin",
+
+    "createdAt": {
+      "$date": "2022-09-02T10:15:38.563Z"
+    },
+    "updatedAt": {
+      "$date": "2022-09-02T10:15:38.563Z"
+    }
+}
+  
