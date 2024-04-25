@@ -3,23 +3,12 @@
   padding: 0;
 }
 
-/* App.css */
-.layout {
-  display: flex;
-}
-
-.sidebar {
-  background-color: whitesmoke;
-  min-width: 17rem;
-  height: 100vh;
-  border-top-right-radius: 35px;
-  border-bottom-right-radius: 35px;
-  padding: 1rem;
-  box-shadow: 5px 0 5px #f4e8f8;
-}
-
 .content { padding: 1rem; }
 
 .content img {
   width: 120px;
+}
+
+ul{
+  list-style-type: none;
 }

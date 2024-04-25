@@ -1,31 +1,30 @@
 // Layout.jsx
 import React from 'react';
-import { Link } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import { shadows } from '@mui/system';
-
+import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
+import SideBar from './SideBar';
+import Player from './Player';
 
 const Layout = ({ children }) => {
   return (
     <React.Fragment>
     <CssBaseline />
-      <Box component="div" sx={{ backgroundImage: 'linear-gradient(#f2eefa, #f4e8f8, #ead6fa)', height: '100vh' }} >
-        <div className="layout">
-            <div className="sidebar">
-                <ul>
-                    <li><Link to="/">Inicio</Link></li>
-                    <li><Link to="/explore">Explorar</Link></li>
-                    <li><Link to="/podcasts">Podcasts</Link></li>
-                    <li><Link to="/events">Events</Link></li>
-                </ul>
-            </div>
-            <div className="content">
+      
+      <Grid container columnSpacing={3} sx={{ backgroundImage: 'linear-gradient(#f2eefa, #f4e8f8, #ead6fa)', margin: '0px', height: '100vh' }}>
+        <Grid item lg={2} p={3}>
+          <SideBar />
+        </Grid>
+        <Grid container lg={9} p={3}>
+          <Grid item lg={12} sx={{height: 'calc(100% - 6rem)'}}>
             {children}
-            </div>
-        </div>
-      </Box>
+          </Grid>
+          <Grid item lg={12} sx={{height: '6rem'}}>
+            <Player />
+          </Grid>
+        </Grid>
+      </Grid>
+      
   </React.Fragment>
   );
 };
