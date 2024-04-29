@@ -16,7 +16,7 @@ const Layout = ({ children }) => {
           <SideBar />
         </Grid>
         <Grid container lg={9} p={3}>
-          <Grid item lg={12} sx={{height: 'calc(100% - 6rem)'}}>
+          <Grid item lg={12} sx={{maxHeight: 'calc(100vh - 8rem)', overflowY: 'auto'}}>
             {children}
           </Grid>
           <Grid item lg={12} sx={{height: '6rem'}}>
