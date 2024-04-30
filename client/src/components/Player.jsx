@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
+import Grid from '@mui/material/Grid';
 
 const Player = ({ songData }) => {
     const [nombre, setNombre] = useState("");
     const [portada, setPortada] = useState("");
-
-    console.log('data'+ songData)
 
     useEffect(() => {
         if (songData) {
@@ -25,10 +24,14 @@ const Player = ({ songData }) => {
 
     return (
         <Box p={2} style={playerStyles}>
-            {console.log(nombre)}
-            {console.log(portada)}
-            <h2>A:{nombre}</h2>
-            {portada && <img src={portada} alt="Portada del álbum" />}
+            <Grid container>
+                <Grid item>
+                    {portada && <img src={portada} alt="Portada del álbum" />}
+                </Grid>
+                <Grid item>
+                    <p>{nombre}</p>
+                </Grid>
+            </Grid>
         </Box>
     );
 }
