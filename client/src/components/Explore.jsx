@@ -64,8 +64,6 @@ const Explore = () => {
                                             </CardContent> */}
                                         </CardActionArea>
                                     </Card>
- 
-    
                                 </Grid>
                             );
                         } else {

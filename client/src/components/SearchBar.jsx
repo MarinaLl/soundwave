@@ -4,7 +4,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import TextField from '@mui/material/TextField';
 import Player from './Player';
 
-const SearchBar = () => {
+const SearchBar = ({onSongData}) => {
     const [cancion, setCancion] = useState("");
     const [canciones, setCanciones] = useState([]);
     const [cancionSeleccionada, setCancionSeleccionada] = useState(); // Estado para la canción seleccionada
@@ -44,8 +44,12 @@ const SearchBar = () => {
     function handleSongClick(nombre, portada) {
         const cancionSeleccionada = { nombre, portada };
         setCancionSeleccionada(cancionSeleccionada);
-        console.log('click'+cancionSeleccionada)
+        console.log('click'+cancionSeleccionada);
+        if (typeof onSongData === 'function') {
+            onSongData(cancionSeleccionada)
+        }
     }
+    
 
     return (
         <Box sx={{ width: '100%', height: '100%' }}>
@@ -68,7 +72,7 @@ const SearchBar = () => {
                     </div>
                 );
             })}
-            {cancionSeleccionada && <Player cancion={cancionSeleccionada}/>}
+            {/* {cancionSeleccionada && <Player cancion={cancionSeleccionada}/>} */}
         </Box>
     );
 }

@@ -1,5 +1,5 @@
 // Layout.jsx
-import React from 'react';
+import React, {useState} from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
@@ -7,6 +7,21 @@ import SideBar from './SideBar';
 import Player from './Player';
 
 const Layout = ({ children }) => {
+
+  const [songData, setSongData] = useState(null);
+
+  const handleSongData = (song) => {
+    setSongData(song)
+  }
+
+  // Clonar cada elemento hijo y pasar las props adicionales
+  const childrenWithProps = React.Children.map(children, (child) => {
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, { onSongData: handleSongData });
+    }
+    return child;
+  });
+
   return (
     <React.Fragment>
     <CssBaseline />
@@ -17,10 +32,10 @@ const Layout = ({ children }) => {
         </Grid>
         <Grid container lg={9} p={3}>
           <Grid item lg={12} sx={{maxHeight: 'calc(100vh - 8rem)', overflowY: 'auto'}}>
-            {children}
+            {childrenWithProps}
           </Grid>
           <Grid item lg={12} sx={{height: '6rem'}}>
-            <Player />
+            <Player songData={songData} />
           </Grid>
         </Grid>
       </Grid>
