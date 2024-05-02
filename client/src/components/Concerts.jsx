@@ -16,7 +16,7 @@ const Concerts = () => {
         const options = {
             method: 'GET',
             headers: {
-                'X-RapidAPI-Key': '7d80b0268dmshd1c138a738f085dp188607jsn25ed429a3876',
+                'X-RapidAPI-Key': 'f3a0d03207msh780ffdd4dfe3e9bp1f5e5ajsn4f6c81338766',
                 'X-RapidAPI-Host': 'spotify23.p.rapidapi.com'
             }
         };

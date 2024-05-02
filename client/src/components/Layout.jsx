@@ -32,7 +32,7 @@ const Layout = ({ children }) => {
         </Grid>
         <Grid container lg={9} p={3}>
           <Grid item lg={12} sx={{maxHeight: 'calc(100vh - 8rem)', overflowY: 'auto'}}>
-            {childrenWithProps}
+            {/* {childrenWithProps} */}
           </Grid>
           <Grid item lg={12} sx={{height: '6rem'}}>
             <Player songData={songData} />

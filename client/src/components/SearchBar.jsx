@@ -24,7 +24,7 @@ const SearchBar = ({ onSongData }) => {
         const options = {
             method: 'GET',
             headers: {
-                'X-RapidAPI-Key': 'e31d45b98emshbf807fed0c293e5p1380bbjsncc962975322f',
+                'X-RapidAPI-Key': 'f3a0d03207msh780ffdd4dfe3e9bp1f5e5ajsn4f6c81338766',
                 'X-RapidAPI-Host': 'spotify23.p.rapidapi.com'
             }
         };
@@ -55,11 +55,12 @@ const SearchBar = ({ onSongData }) => {
     }
 
     // Función para manejar el clic en una canción
-    function handleSongClick(nombre, portada) {
-        const cancionSeleccionada = { nombre, portada };
+    function handleSongClick(nombre, portada, cancionID) {
+        const cancionSeleccionada = { nombre, portada, cancionID };
         setCancionSeleccionada(cancionSeleccionada);
         
         if (typeof onSongData === 'function') {
+            console.log(cancionID)
             onSongData(cancionSeleccionada)
         }
     }
@@ -92,8 +93,10 @@ const SearchBar = ({ onSongData }) => {
                             const portada = cancion.data.albumOfTrack.coverArt.sources[0].url;
                             const portadaMini = cancion.data.albumOfTrack.coverArt.sources[1].url;
                             const nombre = cancion.data.name;
+                            const cancionID = cancion.data.id;
+                            
                             return (
-                                <Grid item xs={6} sm={6} lg={2} xl={2} key={cancion.data.id} onClick={() => handleSongClick(nombre, portadaMini)}>
+                                <Grid item xs={6} sm={6} lg={2} xl={2} key={cancion.data.id} onClick={() => handleSongClick(nombre, portadaMini, cancionID)}>
                                     <Card sx={{ maxWidth: 345 }}>
                                         <CardActionArea>
                                             <CardMedia
