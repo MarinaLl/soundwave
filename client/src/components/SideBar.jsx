@@ -1,5 +1,14 @@
 import React from "react";
 import { Link } from 'react-router-dom';
+import Box from '@mui/material/Box';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import ExploreIcon from '@mui/icons-material/Explore';
+import { Typography } from "@mui/material";
 
 const SideBar = () => {
 
@@ -10,15 +19,42 @@ const SideBar = () => {
         boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)'
     }
 
+    // <nav style={sideBarStyles} >
+    //         <ul>
+    //             <li><Link to="/">Inicio</Link></li>
+    //             <li><Link to="/explore">Explorar</Link></li>
+    //             <li><Link to="/podcasts">Podcasts</Link></li>
+    //             <li><Link to="/events">Events</Link></li>
+    //         </ul>
+    //     </nav>
+
     return (
-        <nav style={sideBarStyles} >
-            <ul>
-                <li><Link to="/">Inicio</Link></li>
-                <li><Link to="/explore">Explorar</Link></li>
-                <li><Link to="/podcasts">Podcasts</Link></li>
-                <li><Link to="/events">Events</Link></li>
-            </ul>
-        </nav>
+        <Box style={sideBarStyles}>
+            <Typography variant="h4" p={3} sx={{color: '#5A5BEF', fontFamily: 'Lobster'}}>
+                SoundWave
+            </Typography>
+            <nav aria-label="main mailbox folders">
+                <List>
+                <ListItem disablePadding>
+                    <ListItemButton component={Link} to="/">
+                    <ListItemIcon>
+                        <HomeRoundedIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Home" />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton component={Link} to="/explore">
+                    <ListItemIcon>
+                        <ExploreIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Explore" />
+                    </ListItemButton>
+                </ListItem>
+                </List>
+            </nav>
+        </Box>
+        
     );
 }
 
