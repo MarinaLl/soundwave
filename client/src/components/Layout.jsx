@@ -9,7 +9,6 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import FolderIcon from '@mui/icons-material/Folder';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import ExploreIcon from '@mui/icons-material/Explore';
 import SearchIcon from '@mui/icons-material/Search';
@@ -53,7 +52,7 @@ const Layout = ({ children }) => {
           </Grid>
           <Grid container lg={9} p={3}>
             <Grid item lg={12} sx={{maxHeight: 'calc(100vh - 8rem)', overflowY: 'auto'}}>
-              {childrenWithProps}
+              {/* {childrenWithProps} */}
             </Grid>
             <Grid item lg={12} sx={{height: '6rem'}}>
               <Player songData={songData} />
@@ -63,10 +62,10 @@ const Layout = ({ children }) => {
       ) : (
         <Grid container sx={{ backgroundImage: 'linear-gradient(#f2eefa, #f4e8f8, #ead6fa)', margin: '0px', height: '100vh' }}>
           <Grid item xs={12} sx={{height: 'calc(100% - 7rem)'}}>
-            {childrenWithProps}
+            {/* {childrenWithProps} */}
           </Grid>
           <Grid item xs={12} sx={{alignSelf: 'end', position: 'fixed'}}>
-            <BottomNavigation sx={{ width: '100%' }} value={value} onChange={handleChange}>
+            <BottomNavigation sx={{ width: '100%', height: 'fit-content' }} value={value} onChange={handleChange}>
               <Player songData={songData} /> 
             </BottomNavigation>
             <Divider />

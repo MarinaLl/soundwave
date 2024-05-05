@@ -7,7 +7,9 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import SearchIcon from '@mui/icons-material/Search';
 import ExploreIcon from '@mui/icons-material/Explore';
+import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 import { Typography } from "@mui/material";
 
 const SideBar = () => {
@@ -49,6 +51,22 @@ const SideBar = () => {
                         <ExploreIcon />
                     </ListItemIcon>
                     <ListItemText primary="Explore" />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton component={Link} to="/search">
+                    <ListItemIcon>
+                        <SearchIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Search" />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton component={Link} to="/library">
+                    <ListItemIcon>
+                        <LibraryMusicIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="My Library" />
                     </ListItemButton>
                 </ListItem>
                 </List>
