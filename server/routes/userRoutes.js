@@ -24,33 +24,38 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Ruta para iniciar sesión
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
 
     // Busca el usuario en la base de datos por nombre de usuario
     const user = await User.findOne({ username });
-    if (!user) {
+
+    if (!user || user.password !== password) {
       return res.status(404).json({ message: 'Nombre de usuario o contraseña incorrectos.' });
     }
 
-    // Comprueba si la contraseña proporcionada coincide con la contraseña almacenada en la base de datos
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Nombre de usuario o contraseña incorrectos.' });
-    }
+    // Almacena información del usuario en la sesión
+    req.session.userId = user._id;
 
-    // Si el nombre de usuario y la contraseña son válidos, genera un token de autenticación
-    const token = jwt.sign({ userId: user._id }, 'secreto', { expiresIn: '1h' });
-
-    // Devuelve el token en la respuesta
-    res.status(200).json({ token });
+    res.status(200).json({ message: 'Inicio de sesión exitoso.' });
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
     res.status(500).json({ message: 'Error interno del servidor.' });
   }
 });
+
+router.get('/profile', (req, res) => {
+  // Verifica si hay una sesión de usuario activa
+  if (req.session.userId) {
+    // Si hay una sesión de usuario, realiza las acciones necesarias
+    res.send('¡Bienvenido a tu perfil!');
+  } else {
+    // Si no hay una sesión de usuario, redirige al usuario a la página de inicio de sesión
+    res.redirect('/login');
+  }
+});
+
 
 // Otras rutas relacionadas con el usuario...
 
