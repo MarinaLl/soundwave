@@ -4,7 +4,7 @@ import SearchBar from './components/SearchBar';
 import Explore from './components/Explore';
 import Podcasts from './components/Podcasts';
 import Concerts from './components/Concerts';
-import Register from './components/register';
+import Register from './components/Register';
 import {  Routes, Route , Link} from "react-router-dom";
 
 function App() {
