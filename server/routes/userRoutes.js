@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const requireAuth = require('../middleware/authMiddleware');
 const User = require('../models/user');
 
 // Ruta para registrar un nuevo usuario
@@ -37,24 +38,44 @@ router.post('/login', async (req, res) => {
 
     // Almacena información del usuario en la sesión
     req.session.userId = user._id;
+    req.session.username = user.username;
 
-    res.status(200).json({ message: 'Inicio de sesión exitoso.' });
+    res.status(200).json({ message: 'Inicio de sesión exitoso!.' });
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
     res.status(500).json({ message: 'Error interno del servidor.' });
   }
 });
 
-router.get('/profile', (req, res) => {
+router.get('/profile', requireAuth,(req, res) => {
   // Verifica si hay una sesión de usuario activa
   if (req.session.userId) {
     // Si hay una sesión de usuario, realiza las acciones necesarias
-    res.send('¡Bienvenido a tu perfil!');
+    res.status(200).json({ message: `¡Bienvenido a tu perfil, ${req.session.username}!`, username: req.session.username });
   } else {
     // Si no hay una sesión de usuario, redirige al usuario a la página de inicio de sesión
-    res.redirect('/login');
+    res.status(500).json({ message: 'Error interno del servidor.' });
   }
 });
+
+router.post('/logout', (req, res) => {
+  try {
+    // Destruye la sesión del usuario
+    req.session.destroy(err => {
+      if (err) {
+        console.error('Error al cerrar sesión:', err);
+        res.status(500).json({ message: 'Error al cerrar sesión.' });
+      } else {
+        res.clearCookie('connect.sid'); // Limpia la cookie de sesión
+        res.status(200).json({ message: 'Sesión cerrada exitosamente.' });
+      }
+    });
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error);
+    res.status(500).json({ message: 'Error interno del servidor.' });
+  }
+});
+
 
 
 // Otras rutas relacionadas con el usuario...

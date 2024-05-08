@@ -6,6 +6,7 @@ import Podcasts from './components/Podcasts';
 import Concerts from './components/Concerts';
 import Register from './components/Register';
 import Login from './components/Login';
+import Profile from './components/Profile';
 import {  Routes, Route , Link} from "react-router-dom";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="events" element={<Layout><Concerts /></Layout>}></Route>
           <Route path="register" element={<Register></Register>}></Route>
           <Route path="login" element={<Login></Login>}></Route>
+          <Route path="profile" element={<Layout><Profile /></Layout>}></Route>
         </Routes>
     </div>
   );
