@@ -7,6 +7,7 @@ import { addFavoriteSong, removeFavoriteSong } from '../actions/favoriteSongsAct
 const Player = ({ songData }) => {
     const [nombre, setNombre] = useState("");
     const [portada, setPortada] = useState("");
+    const [cancionID, setCancionID] = useState("");
     const [audioUrl, setAudioUrl] = useState("");
     const dispatch = useDispatch();
 
@@ -14,11 +15,12 @@ const Player = ({ songData }) => {
         if (songData) {
             setNombre(songData.nombre);
             setPortada(songData.portada);
+            setCancionID(songData.cancionID);
             getSongAudio(songData.cancionID);
         }
     }, [songData]);
 
-    const favoriteSongs = useSelector(state => state.favoriteSongs);
+    const favoriteSongs = useSelector(state => state.favoriteSongs.favoriteSongs);
 
     async function getSongAudio(songID) {
         const url = `https://spotify23.p.rapidapi.com/tracks/?ids=${songID}`;
@@ -40,10 +42,13 @@ const Player = ({ songData }) => {
     }
 
     const handleLike = () => {
-        if (favoriteSongs.includes(songData.cancionID)) {
-            dispatch(removeFavoriteSong(songData.cancionID));
+        
+        if (favoriteSongs.includes(cancionID)) {
+            dispatch(removeFavoriteSong(cancionID));
+            console.log("favoriteSongs eliminada:", favoriteSongs);
         } else {
-            dispatch(addFavoriteSong(songData.cancionID));
+            dispatch(addFavoriteSong(cancionID));
+            console.log("favoriteSongs agregada:", favoriteSongs);
         }
     };
 
@@ -64,7 +69,7 @@ const Player = ({ songData }) => {
                 </Grid>
                 <Grid item>
                     <button onClick={handleLike}>
-                        {favoriteSongs.includes(songData.cancionID) ? 'Unlike' : 'Like'}
+                        {favoriteSongs.includes(cancionID) ? 'Unlike' : 'Like'}
                     </button>
                 </Grid>
             </Grid>

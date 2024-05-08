@@ -10,7 +10,8 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import SearchIcon from '@mui/icons-material/Search';
 import ExploreIcon from '@mui/icons-material/Explore';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
-import { Typography, Avatar, Chip } from "@mui/material";
+import { Typography} from "@mui/material";
+import Profile from "./Profile";
 
 const SideBar = () => {
 
@@ -70,11 +71,7 @@ const SideBar = () => {
                     </ListItemButton>
                 </ListItem>
                 </List>
-                <Chip
-                    avatar={<Avatar alt="Natacha" src="/static/images/avatar/1.jpg" />}
-                    label="Avatar"
-                    variant="outlined"
-                />
+                <Profile />
             </nav>
         </Box>
         

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Avatar, Chip } from "@mui/material";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -29,8 +30,11 @@ const Profile = () => {
 
   return (
     <>
-      <h1>Perfil de usuario</h1>
-      <p>¡Bienvenido a tu perfil, {username}!</p>
+      <Chip
+        avatar={<Avatar alt={username} src="/static/images/avatar/1.jpg" />}
+        label={username}
+        variant="outlined"
+      />
     </>
   );
 };

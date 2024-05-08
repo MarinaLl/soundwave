@@ -8,6 +8,9 @@ var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
 const userRoutes = require('./routes/userRoutes');
+const songRoutes = require('./routes/songRoutes');
+const playlistRoutes = require('./routes/playlistRoutes');
+const likeRoutes = require('./routes/favoriteSongRoutes');
 const cors = require('cors');
 
 
@@ -42,8 +45,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', userRoutes);
-
-
+app.use('/songs', songRoutes);
+app.use('/playlists', playlistRoutes);
+app.use('/like', likeRoutes);
 
 // error handler
 app.use(function(err, req, res, next) {
