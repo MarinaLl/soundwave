@@ -10,8 +10,14 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import SearchIcon from '@mui/icons-material/Search';
 import ExploreIcon from '@mui/icons-material/Explore';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
-import { Typography} from "@mui/material";
+import { Typography, Collapse } from "@mui/material";
+import StarBorder from '@mui/icons-material/StarBorder';
 import Profile from "./Profile";
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import PlaylistPlayRoundedIcon from '@mui/icons-material/PlaylistPlayRounded';
+import PlaylistAddRoundedIcon from '@mui/icons-material/PlaylistAddRounded';
 
 const SideBar = () => {
 
@@ -21,6 +27,14 @@ const SideBar = () => {
         borderRadius: '25px',
         boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)'
     }
+
+    const [open, setOpen] = React.useState(true);
+
+    const handleClick = () => {
+        setOpen(!open);
+    };
+
+    
 
     // <nav style={sideBarStyles} >
     //         <ul>
@@ -70,6 +84,23 @@ const SideBar = () => {
                     <ListItemText primary="My Library" />
                     </ListItemButton>
                 </ListItem>
+                <ListItemButton onClick={handleClick}>
+                    <ListItemIcon>
+                        <PlaylistPlayRoundedIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Playlists" />
+                    {open ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+                <Collapse in={open} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        <ListItemButton sx={{ pl: 4 }}>
+                            <ListItemIcon>
+                                <PlaylistAddRoundedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Add Playlist" />
+                        </ListItemButton>
+                    </List>
+                </Collapse>
                 </List>
                 <Profile />
             </nav>
