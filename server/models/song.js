@@ -11,11 +11,13 @@ const songSchema = new mongoose.Schema({
     required: true
   },
   artist: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Artist', // Referencia al modelo Artist
     required: true
   },
   album: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Album', // Referencia al modelo Album
     required: true
   },
   songUrl: {

@@ -11,6 +11,8 @@ const userRoutes = require('./routes/userRoutes');
 const songRoutes = require('./routes/songRoutes');
 const playlistRoutes = require('./routes/playlistRoutes');
 const likeRoutes = require('./routes/favoriteSongRoutes');
+const artistRoutes = require('./routes/artistRoutes');
+const albumRoutes = require('./routes/albumRoutes');
 const cors = require('cors');
 
 
@@ -48,6 +50,8 @@ app.use('/users', userRoutes);
 app.use('/songs', songRoutes);
 app.use('/playlists', playlistRoutes);
 app.use('/like', likeRoutes);
+app.use('/artists', artistRoutes);
+app.use('/albums', albumRoutes);
 
 // error handler
 app.use(function(err, req, res, next) {
