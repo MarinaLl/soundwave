@@ -17,7 +17,17 @@ const cors = require('cors');
 
 
 var app = express();
-app.use(cors());
+//app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', // Reemplaza esto con el origen de tu frontend
+  credentials: true
+}));
+
+app.options('*', cors({
+  origin: 'http://localhost:3000', // Reemplaza esto con el origen de tu frontend
+  credentials: true
+}));
+
 
 app.use(session({
   secret: 'secreto',

@@ -82,6 +82,21 @@ router.post('/:playlistId/add-song', async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+// Ruta para listar todas las playlists asignadas al usuario de la sesión
+router.get('/all/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params; // Asumiendo que el usuario está en req.user
+
+    // Obtener todas las playlists del usuario
+    const playlists = await Playlist.find({ createdBy: userId });
+
+    res.status(200).json(playlists);
+  } catch (error) {
+    console.error('Error al obtener las playlists del usuario:', error);
+    res.status(500).json({ message: 'Error interno del servidor.' });
+  }
+});
   
 
 // Otras rutas relacionadas con las playlists...
