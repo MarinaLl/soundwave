@@ -1,10 +1,26 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const songSchema = new mongoose.Schema({
+const imageSchema = new Schema({
+  height: {
+    type: Number,
+    required: true
+  },
+  url: {
+    type: String,
+    required: true
+  },
+  width: {
+    type: Number,
+    required: true
+  }
+}, { _id: false });
+
+const songSchema = new Schema({
   songId: {
-    type: String, // Tipo de dato para el ID de la canción
+    type: String,
     required: true,
-    unique: true // Para asegurar que cada canción tenga un ID único
+    unique: true
   },
   name: {
     type: String,
@@ -12,21 +28,25 @@ const songSchema = new mongoose.Schema({
   },
   artist: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Artist', // Referencia al modelo Artist
+    ref: 'Artist',
     required: true
   },
   album: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Album', // Referencia al modelo Album
+    ref: 'Album',
     required: true
   },
   songUrl: {
     type: String,
     required: true
   },
+  image: {
+    type: imageSchema,
+    required: true
+  },
   addedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // Referencia al modelo de usuario para identificar quién agregó la canción
+    ref: 'User',
     required: true
   },
   createdAt: {

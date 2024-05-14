@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const FavoriteSong = require('../models/favoriteSong');
+const Song = require('../models/song');
 
 // Ruta para que un usuario agregue una canción a sus favoritos
 router.post('/add', async (req, res) => {
@@ -26,17 +27,28 @@ router.post('/add', async (req, res) => {
 
 // Ruta para obtener todas las canciones favoritas de un usuario
 router.get('/all/:userId', async (req, res) => {
-    try {
+  try {
       const userId = req.params.userId;
-  
+
       // Buscar todas las canciones favoritas del usuario
       const favoriteSongs = await FavoriteSong.find({ userId });
-  
-      res.status(200).json(favoriteSongs);
-    } catch (error) {
+
+      // Crear un array para almacenar los datos de las canciones favoritas
+      let favoriteSongsData = [];
+
+      // Iterar sobre las canciones favoritas y buscar sus datos completos
+      for (const favorite of favoriteSongs) {
+          const song = await Song.findOne({ _id: favorite.songId });
+          if (song) {
+              favoriteSongsData.push(song);
+          }
+      }
+
+      res.status(200).json(favoriteSongsData);
+  } catch (error) {
       console.error('Error al obtener las canciones favoritas:', error);
       res.status(500).json({ message: 'Error interno del servidor.' });
-    }
+  }
 });
 
 module.exports = router;
