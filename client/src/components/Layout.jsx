@@ -13,6 +13,8 @@ import ExploreIcon from '@mui/icons-material/Explore';
 import SearchIcon from '@mui/icons-material/Search';
 import Divider from '@mui/material/Divider';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
+import PlaylistPlayRoundedIcon from '@mui/icons-material/PlaylistPlayRounded';
+import { Link } from 'react-router-dom';
 
 
 const Layout = ({ children }) => {
@@ -50,7 +52,7 @@ const Layout = ({ children }) => {
             <SideBar />
           </Grid>
           <Grid container lg={9} p={3}>
-            <Grid item lg={12} sx={{maxHeight: 'calc(100vh - 8rem)', overflowY: 'auto'}}>
+            <Grid item lg={12} sx={{maxHeight: 'calc(100vh - 8rem)', overflowY: 'auto', scrollbarColor: '#5A5BEF transparent'}}>
               {childrenWithProps}
             </Grid>
             <Grid item lg={12} sx={{height: '6rem'}}>
@@ -60,7 +62,7 @@ const Layout = ({ children }) => {
         </Grid>
       ) : (
         <Grid container sx={{ backgroundImage: 'linear-gradient(#f2eefa, #f4e8f8, #ead6fa)', margin: '0px', height: '100vh' }}>
-          <Grid item xs={12} sx={{height: 'calc(100% - 7rem)'}}>
+          <Grid item xs={12} p={2} sx={{height: 'calc(100% - 7rem)'}}>
             {childrenWithProps}
           </Grid>
           <Grid item xs={12} sx={{alignSelf: 'end', position: 'fixed'}}>
@@ -70,21 +72,30 @@ const Layout = ({ children }) => {
             <Divider />
             <BottomNavigation sx={{ width: '100%' }} value={value} onChange={handleChange}>
               <BottomNavigationAction
+                component={Link}
+                to="/"
                 label="Home"
                 value="Home"
                 icon={<HomeRoundedIcon />}
-              />
-              <BottomNavigationAction
-                label="Explore"
-                value="Explore"
-                icon={<ExploreIcon />}
+                
               />
               <BottomNavigationAction
                 label="Search"
                 value="Search"
                 icon={<SearchIcon />}
               />
-              <BottomNavigationAction label="My library" value="My Library" icon={<LibraryMusicIcon />} />
+              <BottomNavigationAction
+                component={Link}
+                to="/playlists"
+                label="Playlists" 
+                value="Playlists" 
+                icon={<PlaylistPlayRoundedIcon />} />
+              <BottomNavigationAction
+                component={Link}
+                to="/library"
+                label="My library" 
+                value="My Library" 
+                icon={<LibraryMusicIcon />} />
             </BottomNavigation>
           </Grid>
         </Grid>

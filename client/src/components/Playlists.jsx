@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-const Library = () => {
+const Playlists = () => {
   const [userId, setUserId] = useState("");
   const [songs, setSongs] = useState([]);
   const navigate = useNavigate();
+
+//   const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -57,7 +59,7 @@ const Library = () => {
   
   return (
     <>
-      <h1>My Library</h1>
+      <h1>Playlists</h1>
       {songs.length === 0 ? (
         <p>No tienes canciones en tu biblioteca.</p>
       ) : (
@@ -78,4 +80,4 @@ const Library = () => {
   );
 };
 
-export default Library;
+export default Playlists;

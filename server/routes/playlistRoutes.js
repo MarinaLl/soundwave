@@ -5,20 +5,21 @@ const Playlist = require('../models/playlist');
 const Song = require('../models/song');
 
 // Ruta para crear una nueva playlist
-router.post('/new', async (req, res) => {
+router.post('/new/:userId', async (req, res) => {
   try {
-    const { name, createdBy, songs } = req.body;
+    const { userId } = req.params;
+    const { name, songs } = req.body;
 
     // Verificar si los campos requeridos están presentes
-    if (!name || !createdBy) {
-      return res.status(400).json({ message: 'El nombre y el creador son campos obligatorios.' });
+    if (!name) {
+      return res.status(400).json({ message: 'El nombre es un campo obligatorio.' });
     }
 
     // Crear una nueva playlist
-    const newPlaylist = new Playlist({ name, createdBy, songs });
+    const newPlaylist = new Playlist({ name, createdBy: userId, songs });
     await newPlaylist.save();
 
-    res.status(201).json({ message: 'Playlist creada exitosamente.' });
+    res.status(201).json({ message: 'Playlist creada exitosamente.', playlist: newPlaylist });
   } catch (error) {
     console.error('Error al crear la playlist:', error);
     res.status(500).json({ message: 'Error interno del servidor.' });

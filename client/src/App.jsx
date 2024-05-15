@@ -8,6 +8,7 @@ import Register from './components/Register';
 import Login from './components/Login';
 import Profile from './components/Profile';
 import Library from './components/Library';
+import Playlists from './components/Playlists';
 import {  Routes, Route , Link} from "react-router-dom";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="login" element={<Login></Login>}></Route>
           <Route path="profile" element={<Layout><Profile /></Layout>}></Route>
           <Route path="library" element={<Layout><Library /></Layout>}></Route>
+          <Route path="playlists" element={<Layout><Playlists /></Layout>}></Route>
         </Routes>
     </div>
   );

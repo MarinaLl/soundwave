@@ -17,11 +17,18 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import PlaylistPlayRoundedIcon from '@mui/icons-material/PlaylistPlayRounded';
 import PlaylistAddRoundedIcon from '@mui/icons-material/PlaylistAddRounded';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
 const SideBar = () => {
     const [userId, setUserId] = useState('');
     const [playlists, setPlaylists] = useState([]);
     const [open, setOpen] = useState(true);
+    const [openDialog, setOpenDialog] = React.useState(false);
     const navigate = useNavigate();
 
     const sideBarStyles = {
@@ -31,10 +38,22 @@ const SideBar = () => {
         boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)'
     }
 
+    // click para el desplegable de playlists
     const handleClick = () => {
         setOpen(!open);
     };
 
+    // click para abrir el dialog
+    const handleClickOpen = () => {
+        setOpenDialog(true);
+    };
+
+    // click para cerrar el dialog
+    const handleClose = () => {
+        setOpenDialog(false);
+    };
+
+    // logout del usuario
     const handleLogout = async () => {
         try {
             const response = await fetch('http://localhost:4000/users/logout', {
@@ -54,6 +73,7 @@ const SideBar = () => {
         }
     };
 
+    // Obtener la id del usuario en session
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -76,6 +96,7 @@ const SideBar = () => {
         fetchProfile();
     }, [navigate]);
 
+    // Mostrar todas las playlist del usuario en el desplegable de playlists
     useEffect(() => {
         const fetchPlaylists = async () => {
             try {
@@ -101,6 +122,34 @@ const SideBar = () => {
             fetchPlaylists();
         }
     }, [userId]);
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const formJson = Object.fromEntries(formData.entries());
+        const playlistName = formJson.name;
+        console.log(playlistName)
+        try {
+          const response = await fetch(`http://localhost:4000/playlists/new/${userId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({ name: playlistName, songs: [] })
+          });
+    
+          if (response.ok) {
+            const data = await response.json();
+            setPlaylists([...playlists, data.playlist]);
+            handleClose();
+          } else {
+            console.error('Error al crear la playlist:', response.statusText);
+          }
+        } catch (error) {
+          console.error('Error al crear la playlist:', error);
+        }
+    };
 
     return (
         <Box style={sideBarStyles}>
@@ -148,9 +197,10 @@ const SideBar = () => {
                     <ListItemText primary="Playlists" />
                     {open ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
-                <Collapse in={open} timeout="auto" unmountOnExit>
+                
+                <Collapse in={open} timeout="auto" unmountOnExit style={{maxHeight: 200, overflowY: 'auto', scrollbarColor: '#5A5BEF transparent'}}>
                     <List component="div" disablePadding>
-                        <ListItemButton sx={{ pl: 4 }} component={Link} to="/add-playlist">
+                        <ListItemButton sx={{ pl: 4 }} onClick={handleClickOpen}>
                             <ListItemIcon>
                                 <PlaylistAddRoundedIcon />
                             </ListItemIcon>
@@ -174,6 +224,35 @@ const SideBar = () => {
                 </ListItemButton>
                 </List>
                 <Profile />
+                <Dialog
+                    open={openDialog}
+                    onClose={handleClose}
+                    PaperProps={{
+                        component: 'form',
+                        onSubmit: handleSubmit
+                    }}
+                    
+                >
+                    <DialogTitle>New Playlist</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            autoFocus
+                            required
+                            margin="dense"
+                            id="name"
+                            name="name"
+                            label="Playlist Name"
+                            type="text"
+                            style={{width: '400px'}}
+                            variant="standard"
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose}>Cancel</Button>
+                        <Button type="submit">Create</Button>
+                    </DialogActions>
+                </Dialog>
+                
             </nav>
         </Box>
     );

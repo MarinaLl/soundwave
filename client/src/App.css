@@ -50,3 +50,14 @@ ul{
   width: 100%;
   background-color: var(--color-primary) !important;
 }
+
+/* Estilo del thumb (la parte que se arrastra) */
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary); /* Cambia el color de fondo del thumb */
+  border-radius: 5px; /* Añade bordes redondeados al thumb */
+}
+
+/* Estilo del track (el fondo de la barra de desplazamiento) */
+::-webkit-scrollbar-track {
+  background-color: var(--color-primary); /* Cambia el color de fondo del track */
+}
