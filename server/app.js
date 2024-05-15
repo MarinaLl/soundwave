@@ -15,17 +15,18 @@ const artistRoutes = require('./routes/artistRoutes');
 const albumRoutes = require('./routes/albumRoutes');
 const cors = require('cors');
 
-
 var app = express();
-//app.use(cors());
+
+// Configuración del middleware CORS para todas las rutas
 app.use(cors({
-  origin: 'http://localhost:3000', // Reemplaza esto con el origen de tu frontend
-  credentials: true
+  origin: 'http://localhost:3000', // Permite solicitudes desde el frontend React
+  credentials: true // Permite el intercambio de cookies y encabezados de autenticación
 }));
 
+// Configuración de las opciones CORS para todas las rutas
 app.options('*', cors({
-  origin: 'http://localhost:3000', // Reemplaza esto con el origen de tu frontend
-  credentials: true
+  origin: 'http://localhost:3000', // Permite solicitudes desde el frontend React
+  credentials: true // Permite el intercambio de cookies y encabezados de autenticación
 }));
 
 
