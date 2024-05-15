@@ -28,7 +28,8 @@ const SideBar = () => {
     const [userId, setUserId] = useState('');
     const [playlists, setPlaylists] = useState([]);
     const [open, setOpen] = useState(true);
-    const [openDialog, setOpenDialog] = React.useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [activeItem, setActiveItem] = useState('');
     const navigate = useNavigate();
 
     const sideBarStyles = {
@@ -36,24 +37,20 @@ const SideBar = () => {
         height: '100%',
         borderRadius: '25px',
         boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)'
-    }
+    };
 
-    // click para el desplegable de playlists
     const handleClick = () => {
         setOpen(!open);
     };
 
-    // click para abrir el dialog
     const handleClickOpen = () => {
         setOpenDialog(true);
     };
 
-    // click para cerrar el dialog
     const handleClose = () => {
         setOpenDialog(false);
     };
 
-    // logout del usuario
     const handleLogout = async () => {
         try {
             const response = await fetch('http://localhost:4000/users/logout', {
@@ -73,7 +70,6 @@ const SideBar = () => {
         }
     };
 
-    // Obtener la id del usuario en session
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -83,7 +79,6 @@ const SideBar = () => {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(data)
                     setUserId(data.userId);
                 } else {
                     throw new Error('Error al obtener la información del perfil');
@@ -96,7 +91,6 @@ const SideBar = () => {
         fetchProfile();
     }, [navigate]);
 
-    // Mostrar todas las playlist del usuario en el desplegable de playlists
     useEffect(() => {
         const fetchPlaylists = async () => {
             try {
@@ -128,26 +122,25 @@ const SideBar = () => {
         const formData = new FormData(event.currentTarget);
         const formJson = Object.fromEntries(formData.entries());
         const playlistName = formJson.name;
-        console.log(playlistName)
         try {
-          const response = await fetch(`http://localhost:4000/playlists/new/${userId}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify({ name: playlistName, songs: [] })
-          });
-    
-          if (response.ok) {
-            const data = await response.json();
-            setPlaylists([...playlists, data.playlist]);
-            handleClose();
-          } else {
-            console.error('Error al crear la playlist:', response.statusText);
-          }
+            const response = await fetch(`http://localhost:4000/playlists/new/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({ name: playlistName, songs: [] })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setPlaylists([...playlists, data.playlist]);
+                handleClose();
+            } else {
+                console.error('Error al crear la playlist:', response.statusText);
+            }
         } catch (error) {
-          console.error('Error al crear la playlist:', error);
+            console.error('Error al crear la playlist:', error);
         }
     };
 
@@ -158,70 +151,97 @@ const SideBar = () => {
             </Typography>
             <nav aria-label="main mailbox folders">
                 <List>
-                <ListItem disablePadding>
-                    <ListItemButton component={Link} to="/">
-                    <ListItemIcon>
-                        <HomeRoundedIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Home" />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton component={Link} to="/explore">
-                    <ListItemIcon>
-                        <ExploreIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Explore" />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton component={Link} to="/search">
-                    <ListItemIcon>
-                        <SearchIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Search" />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton component={Link} to="/library">
-                    <ListItemIcon>
-                        <LibraryMusicIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="My Library" />
-                    </ListItemButton>
-                </ListItem>
-                <ListItemButton onClick={handleClick}>
-                    <ListItemIcon>
-                        <PlaylistPlayRoundedIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Playlists" />
-                    {open ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                
-                <Collapse in={open} timeout="auto" unmountOnExit style={{maxHeight: 200, overflowY: 'auto', scrollbarColor: '#5A5BEF transparent'}}>
-                    <List component="div" disablePadding>
-                        <ListItemButton sx={{ pl: 4 }} onClick={handleClickOpen}>
+                    <ListItem disablePadding>
+                        <ListItemButton 
+                            component={Link} 
+                            to="/" 
+                            onClick={() => setActiveItem('home')}
+                            selected={activeItem === 'home'}
+                        >
                             <ListItemIcon>
-                                <PlaylistAddRoundedIcon />
+                                <HomeRoundedIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Add Playlist" />
+                            <ListItemText primary="Home" />
                         </ListItemButton>
-                        {playlists.map((playlist) => (
-                            <ListItemButton key={playlist._id} component={Link} to={`/playlist/${playlist._id}`} sx={{ pl: 4 }}>
+                    </ListItem>
+                    <ListItem disablePadding>
+                        <ListItemButton 
+                            component={Link} 
+                            to="/explore"
+                            onClick={() => setActiveItem('explore')}
+                            selected={activeItem === 'explore'}
+                        >
+                            <ListItemIcon>
+                                <ExploreIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Explore" />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem disablePadding>
+                        <ListItemButton 
+                            component={Link} 
+                            to="/search"
+                            onClick={() => setActiveItem('search')}
+                            selected={activeItem === 'search'}
+                        >
+                            <ListItemIcon>
+                                <SearchIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Search" />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem disablePadding>
+                        <ListItemButton 
+                            component={Link} 
+                            to="/library"
+                            onClick={() => setActiveItem('library')}
+                            selected={activeItem === 'library'}
+                        >
+                            <ListItemIcon>
+                                <LibraryMusicIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="My Library" />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItemButton onClick={handleClick}>
+                        <ListItemIcon>
+                            <PlaylistPlayRoundedIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Playlists" />
+                        {open ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    
+                    <Collapse in={open} timeout="auto" unmountOnExit style={{maxHeight: 200, overflowY: 'auto', scrollbarColor: '#5A5BEF transparent'}}>
+                        <List component="div" disablePadding>
+                            <ListItemButton sx={{ pl: 4 }} onClick={handleClickOpen}>
                                 <ListItemIcon>
-                                    <PlaylistPlayRoundedIcon />
+                                    <PlaylistAddRoundedIcon />
                                 </ListItemIcon>
-                                <ListItemText primary={playlist.name} />
+                                <ListItemText primary="Add Playlist" />
                             </ListItemButton>
-                        ))}
-                    </List>
-                </Collapse>
-                <ListItemButton onClick={handleLogout}>
-                    <ListItemIcon>
-                        <ExitToAppIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Logout" />
-                </ListItemButton>
+                            {playlists.map((playlist) => (
+                                <ListItemButton 
+                                    key={playlist._id} 
+                                    component={Link} 
+                                    to={`/playlist/${playlist._id}`} 
+                                    sx={{ pl: 4 }}
+                                    onClick={() => setActiveItem(playlist._id)}
+                                    selected={activeItem === playlist._id}
+                                >
+                                    <ListItemIcon>
+                                        <PlaylistPlayRoundedIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary={playlist.name} />
+                                </ListItemButton>
+                            ))}
+                        </List>
+                    </Collapse>
+                    <ListItemButton onClick={handleLogout}>
+                        <ListItemIcon>
+                            <ExitToAppIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Logout" />
+                    </ListItemButton>
                 </List>
                 <Profile />
                 <Dialog
@@ -231,7 +251,6 @@ const SideBar = () => {
                         component: 'form',
                         onSubmit: handleSubmit
                     }}
-                    
                 >
                     <DialogTitle>New Playlist</DialogTitle>
                     <DialogContent>
@@ -252,10 +271,9 @@ const SideBar = () => {
                         <Button type="submit">Create</Button>
                     </DialogActions>
                 </Dialog>
-                
             </nav>
         </Box>
     );
-}
+};
 
 export default SideBar;
