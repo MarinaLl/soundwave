@@ -62,7 +62,7 @@ const Playlists = () => {
   
     return (
         <>
-          <h1>Playlists</h1>
+          {/* <h1>Playlists</h1> */}
           {playlists.length === 0 ? (
             <p>No tienes playlists.</p>
           ) : (
@@ -72,13 +72,13 @@ const Playlists = () => {
                     flexWrap: 'wrap',
                     '& > :not(style)': {
                     m: 1,
-                    width: 80,
-                    height: 80,
+                    width: '100%',
+                    height: 64,
                     },
                 }}
                 >
               {playlists.map((playlist) => (
-                    <Paper elevation={24} key={playlist._id}> {playlist.name}</Paper>
+                    <Paper elevation={0} key={playlist._id} style={{backgroundColor: 'transparent'}}> {playlist.name}</Paper>
                 ))}
             </Box>
           )}

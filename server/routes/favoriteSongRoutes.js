@@ -6,7 +6,15 @@ const Song = require('../models/song');
 // Ruta para que un usuario agregue una canción a sus favoritos
 router.post('/add', async (req, res) => {
   try {
-    const { userId, songId } = req.body;
+    const { userId, songId, songData } = req.body; // Añadimos songData para crear una canción si no existe
+
+    // Verificar si ya existe la canción en la colección de canciones
+    let song = await Song.findById(songId);
+    if (!song) {
+      // Crear una nueva canción si no existe
+      song = new Song({ _id: songId, ...songData });
+      await song.save();
+    }
 
     // Verificar si ya existe la canción en los favoritos del usuario
     const existingFavorite = await FavoriteSong.findOne({ userId, songId });

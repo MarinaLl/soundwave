@@ -19,13 +19,13 @@ var app = express();
 
 // Configuración del middleware CORS para todas las rutas
 app.use(cors({
-  origin: 'http://localhost:3000', // Permite solicitudes desde el frontend React
+  origin: ['http://localhost:3000', 'https://spotify23.p.rapidapi.com/'], // Permite solicitudes desde el frontend React
   credentials: true // Permite el intercambio de cookies y encabezados de autenticación
 }));
 
 // Configuración de las opciones CORS para todas las rutas
 app.options('*', cors({
-  origin: 'http://localhost:3000', // Permite solicitudes desde el frontend React
+  origin: ['http://localhost:3000', 'https://spotify23.p.rapidapi.com/'], // Permite solicitudes desde el frontend React
   credentials: true // Permite el intercambio de cookies y encabezados de autenticación
 }));
 

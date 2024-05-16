@@ -1,9 +1,12 @@
-import * as React from 'react';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Playlists from './Playlists';
+import Profile from "./Profile";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -17,7 +20,7 @@ function CustomTabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -38,24 +41,54 @@ function a11yProps(index) {
   };
 }
 
-export default function BasicTabs() {
-  const [value, setValue] = React.useState(0);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+
+export default function BasicTabs() {
+    const [value, setValue] = React.useState(0);
+    const [userId, setUserId] = useState('');
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const response = await fetch('http://localhost:4000/users/profile', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setUserId(data.username);
+                } else {
+                    throw new Error('Error al obtener la información del perfil');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        fetchProfile();
+    }, [navigate]);
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Box sx={{display: 'flex', justifyContent: 'space-between'}}>
+            <h1>My Library</h1>
+            <Profile />
+        </Box>
+      <Box >
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Item One" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
+          <Tab label="Playlists" {...a11yProps(0)} />
+          <Tab label="Artists" {...a11yProps(1)} />
+          <Tab label="Albums" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        Item One
+        
+        <Playlists />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         Item Two

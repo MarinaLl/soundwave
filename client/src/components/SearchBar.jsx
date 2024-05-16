@@ -8,7 +8,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea, CircularProgress } from '@mui/material';
-import Explore from './Explore';
+import Profile from './Profile';
 
 const SearchBar = ({ onSongData }) => {
     const [cancion, setCancion] = useState("");
@@ -119,7 +119,7 @@ const SearchBar = ({ onSongData }) => {
                     </Grid>
                 </>
             ) : (
-                <Explore />
+                <Profile />
             )}
         </Box>
     );

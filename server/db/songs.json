@@ -1,0 +1,20 @@
+{
+    "album": {
+        "albumId": "someid",
+        "album_type": "single",
+        "name": "Pedro",
+        "release_date": "20-10-2023",
+        "total_tracks": 1,
+        "images": [
+
+        ],  
+        "artists": [
+            {
+                "artistId": "someid"
+            },
+            {
+                "artistId": "someid"
+            }
+        ]
+    }
+}
