@@ -1,21 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const imageSchema = new Schema({
-  height: {
-    type: Number,
-    required: true
-  },
-  url: {
-    type: String,
-    required: true
-  },
-  width: {
-    type: Number,
-    required: true
-  }
-}, { _id: false });
-
 const songSchema = new Schema({
   songId: {
     type: String,
@@ -26,6 +11,23 @@ const songSchema = new Schema({
     type: String,
     required: true
   },
+  songUrl: {
+    type: String,
+    required: true
+  },
+  popularity: {
+    type: Number,
+    required: true
+  },
+  track_number: {
+    type: Number,
+    required: true 
+  },
+  addedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   artist: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Artist',
@@ -34,19 +36,6 @@ const songSchema = new Schema({
   album: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Album',
-    required: true
-  },
-  songUrl: {
-    type: String,
-    required: true
-  },
-  image: {
-    type: imageSchema,
-    required: true
-  },
-  addedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
     required: true
   },
   createdAt: {

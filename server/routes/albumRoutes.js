@@ -13,6 +13,12 @@ router.post('/new', async (req, res) => {
       return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
     }
 
+    // Verificar si el álbum ya existe
+    const existingAlbum = await Album.findOne({ album_id });
+    if (existingAlbum) {
+      return res.status(400).json({ message: 'El álbum ya existe.' });
+    }
+
     const artistIds = [];
 
     for (const artistData of artists) {
