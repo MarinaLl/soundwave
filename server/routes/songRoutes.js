@@ -19,7 +19,7 @@ router.post('/new', async (req, res) => {
     // Verificar si la canción ya existe
     const existingSong = await Song.findOne({ songId });
     if (existingSong) {
-      return res.status(400).json({ message: 'La canción ya existe.' });
+      return res.status(408).json({ message: 'La canción ya existe.' });
     }
 
     // Verificar si el usuario que agrega la canción existe
