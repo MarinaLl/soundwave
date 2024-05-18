@@ -3,27 +3,24 @@ const router = express.Router();
 const Album = require('../models/album');
 const Artist = require('../models/artist');
 
-// Ruta para crear un nuevo álbum
-router.post('/new', async (req, res) => {
+// Función para crear un nuevo álbum
+async function createAlbum(albumData) {
   try {
-    const { album_type, name, album_id, images, release_date, total_tracks, artists } = req.body;
+    console.log('albumData:', JSON.stringify(albumData, null, 2));
+    const { album_type, name, images, release_date, total_tracks, artists } = albumData;
 
-    // Verificar si los campos requeridos están presentes
-    if (!album_type || !name || !album_id || !images || !release_date || total_tracks === undefined || !artists) {
-      return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
-    }
-
+    const album_id = albumData.album_id;
     // Verificar si el álbum ya existe
     const existingAlbum = await Album.findOne({ album_id });
     if (existingAlbum) {
-      return res.status(400).json({ message: 'El álbum ya existe.' });
+      console.log('El álbum ya existe.');
+      return existingAlbum._id;
     }
 
     const artistIds = [];
 
-    for (const artistData of artists) {
+    for (const artistData of albumData.artists) {
       let artist = await Artist.findOne({ artist_id: artistData.artist_id });
-
       // Si el artista no existe, crearlo
       if (!artist) {
         artist = new Artist({
@@ -40,21 +37,24 @@ router.post('/new', async (req, res) => {
 
     // Crear un nuevo álbum
     const newAlbum = new Album({
-      album_type,
-      name,
-      album_id,
-      images,
-      release_date,
-      total_tracks,
+      album_type: albumData.album_type,
+      name: albumData.name,
+      album_id: albumData.album_id,
+      images: albumData.images,
+      release_date: albumData.release_date,
+      total_tracks: albumData.total_tracks,
       artists: artistIds
     });
     await newAlbum.save();
 
-    res.status(201).json({ message: 'Álbum creado exitosamente.' });
+    console.log('Álbum creado exitosamente.');
+    return newAlbum._id;
   } catch (error) {
     console.error('Error al crear el álbum:', error);
-    res.status(500).json({ message: 'Error interno del servidor.' });
+    throw error;
   }
-});
+}
 
-module.exports = router;
+module.exports = {
+  createAlbum
+};

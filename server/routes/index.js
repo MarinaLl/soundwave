@@ -20,6 +20,6 @@ router.use('/songs', songRoutes);
 router.use('/playlists', playlistRoutes);
 router.use('/like', likeRoutes);
 router.use('/artists', artistRoutes);
-router.use('/albums', albumRoutes);
+//router.use('/albums', albumRoutes);
 
 module.exports = router;

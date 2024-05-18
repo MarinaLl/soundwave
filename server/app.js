@@ -62,7 +62,7 @@ app.use('/songs', songRoutes);
 app.use('/playlists', playlistRoutes);
 app.use('/like', likeRoutes);
 app.use('/artists', artistRoutes);
-app.use('/albums', albumRoutes);
+//app.use('/albums', albumRoutes);
 
 // error handler
 app.use(function(err, req, res, next) {
