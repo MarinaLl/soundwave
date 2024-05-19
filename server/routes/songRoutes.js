@@ -12,15 +12,9 @@ router.post('/new', async (req, res) => {
     const { songId, name, album, songUrl, addedBy, popularity, track_number } = req.body;
 
     // Verificar si los campos requeridos están presentes
-    if (!songId || !name || !album || !songUrl || !addedBy || popularity === undefined || track_number === undefined) {
-      return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
-    }
-
-    // Verificar si la canción ya existe
-    const existingSong = await Song.findOne({ songId });
-    if (existingSong) {
-      return res.status(408).json({ message: 'La canción ya existe.' });
-    }
+    // if (!songId || !name || !album || !songUrl || !addedBy || popularity === undefined || track_number === undefined) {
+    //   return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
+    // }
 
     // Verificar si el usuario que agrega la canción existe
     let user = await User.findById(addedBy);
@@ -46,6 +40,24 @@ router.post('/new', async (req, res) => {
     res.status(201).json({ message: 'Canción creada exitosamente.' });
   } catch (error) {
     console.error('Error al crear la canción:', error);
+    res.status(500).json({ message: 'Error interno del servidor.' });
+  }
+});
+
+// Nueva ruta para verificar si una canción ya existe
+router.get('/exists/:songId', async (req, res) => {
+  try {
+    const { songId } = req.params;
+
+    // Verificar si la canción ya existe
+    const existingSong = await Song.findOne({ songId });
+    if (existingSong) {
+      return res.status(200).json({ exists: true, message: 'La canción ya existe.' });
+    } else {
+      return res.status(200).json({ exists: false, message: 'La canción no existe.' });
+    }
+  } catch (error) {
+    console.error('Error al verificar la canción:', error);
     res.status(500).json({ message: 'Error interno del servidor.' });
   }
 });

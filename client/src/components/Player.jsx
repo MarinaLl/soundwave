@@ -54,29 +54,10 @@ const Player = ({ songData }) => {
         }
     }, [audioUrl]);
 
-    // Guardar los artistas después de obtener la info a través de la API
-    function saveArtists(artistData) {
-        const formattedArtists = artistData.artists.map((artist) => ({
-            artistId: artist.id,
-            name: artist.name,
-            genres: artist.genres,
-            images: artist.images
-        }));
-        setArtists(formattedArtists);
-        console.log("Artistas guardados:", formattedArtists);
-    }
-
     // Obtener info de la API de Spotify
     async function getArtist(artists) {
-        const artistIds = [];
-    
-        // Iterar sobre el array de artistas
-        artists.map(async (artist) => {
-            // Obtener el ID del artista y hacer push en el array artistIds
-            artistIds.push(artist.id);
-        });
-    
-        const url = `https://spotify23.p.rapidapi.com/artists/?ids=${artistIds}`;
+        const artistIds = artists.map(artist => artist.id);
+        const url = `https://spotify23.p.rapidapi.com/artists/?ids=${artistIds.join(',')}`;
         const options = {
             method: 'GET',
             headers: {
@@ -89,9 +70,17 @@ const Player = ({ songData }) => {
             const response = await fetch(url, options);
             const result = await response.json();
             console.log(result);
-            saveArtists(result);
+            const formattedArtists = result.artists.map((artist) => ({
+                artistId: artist.id,
+                name: artist.name,
+                genres: artist.genres,
+                images: artist.images
+            }));
+            setArtists(formattedArtists);
+            return formattedArtists; // Retornar los artistas obtenidos
         } catch (error) {
             console.error(error);
+            return []; // Retornar un array vacío en caso de error
         }
     }
 
@@ -115,7 +104,10 @@ const Player = ({ songData }) => {
             const previewUrl = result.tracks[0].preview_url;
             setAudioUrl(previewUrl);
 
-            // Guardar info de artistas y álbum
+            // Obtener y guardar info de artistas
+            const artistData = await getArtist(result.tracks[0].album.artists);
+
+            // Guardar info del álbum
             const albumData = {
                 albumId: result.tracks[0].album.id,
                 album_type: result.tracks[0].album.album_type,
@@ -123,10 +115,9 @@ const Player = ({ songData }) => {
                 release_date: result.tracks[0].album.release_date,
                 total_tracks: result.tracks[0].album.total_tracks,
                 images: result.tracks[0].album.images,
-                artists: result.tracks[0].album.artists
+                artists: artistData
             };
             setAlbum(albumData);
-            getArtist(result.tracks[0].album.artists);
 
             // Crear datos de la canción
             const datosCancion = {

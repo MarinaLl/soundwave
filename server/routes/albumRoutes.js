@@ -9,7 +9,7 @@ async function createAlbum(albumData) {
     console.log('albumData:', JSON.stringify(albumData, null, 2));
     const { album_type, name, images, release_date, total_tracks, artists } = albumData;
 
-    const album_id = albumData.album_id;
+    const album_id = albumData.albumId;
     // Verificar si el álbum ya existe
     const existingAlbum = await Album.findOne({ album_id });
     if (existingAlbum) {
@@ -20,11 +20,11 @@ async function createAlbum(albumData) {
     const artistIds = [];
 
     for (const artistData of albumData.artists) {
-      let artist = await Artist.findOne({ artist_id: artistData.artist_id });
+      let artist = await Artist.findOne({ artist_id: artistData.artistId });
       // Si el artista no existe, crearlo
       if (!artist) {
         artist = new Artist({
-          artist_id: artistData.artist_id,
+          artist_id: artistData.artistId,
           name: artistData.name,
           genres: artistData.genres,
           images: artistData.images
@@ -39,7 +39,7 @@ async function createAlbum(albumData) {
     const newAlbum = new Album({
       album_type: albumData.album_type,
       name: albumData.name,
-      album_id: albumData.album_id,
+      album_id: albumData.albumId,
       images: albumData.images,
       release_date: albumData.release_date,
       total_tracks: albumData.total_tracks,
