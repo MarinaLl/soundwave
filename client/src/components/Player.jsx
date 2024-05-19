@@ -11,15 +11,7 @@ const Player = ({ songData }) => {
     const [cancionID, setCancionID] = useState("");
     const [audioUrl, setAudioUrl] = useState("");
     const audioRef = useRef(null);
-    const [album, setAlbum] = useState({
-        albumId: '',
-        album_type: '',
-        name: '',
-        release_date: '',
-        total_tracks: 0,
-        images: [],
-        artists: []
-    });
+    const [album, setAlbum] = useState({});
     const [artists, setArtists] = useState([]);
     
     // Obtener Usuario
@@ -32,7 +24,7 @@ const Player = ({ songData }) => {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(data)
+                    console.log(data);
                     setUserId(data.userId);
                 } else {
                     throw new Error('Error al obtener la información del perfil');
@@ -45,25 +37,24 @@ const Player = ({ songData }) => {
         fetchProfile();
     }, []);
 
-    // Obtener los datos de la cancion
+    // Obtener los datos de la canción
     useEffect(() => {
         if (songData) {
             setNombre(songData.nombre);
             setPortada(songData.portada);
             setCancionID(songData.cancionID);
-            // Check si la cancion existe y ahorrar peticiones a la API de Spotify
             handleExistingSong(songData.cancionID);
         }
     }, [songData]);
 
-    // Recargar la etiqueta audio para que suene la cancion nueva
+    // Recargar la etiqueta audio para que suene la canción nueva
     useEffect(() => {
         if (audioRef.current) {
             audioRef.current.load(); // Recargar el audio cuando cambie la URL
         }
     }, [audioUrl]);
 
-    // Guardar los artistas despues de obtener la info a traves de la api
+    // Guardar los artistas después de obtener la info a través de la API
     function saveArtists(artistData) {
         const formattedArtists = artistData.artists.map((artist) => ({
             artistId: artist.id,
@@ -72,10 +63,10 @@ const Player = ({ songData }) => {
             images: artist.images
         }));
         setArtists(formattedArtists);
-        console.log("artistas guardados:", formattedArtists);
+        console.log("Artistas guardados:", formattedArtists);
     }
 
-    // Obtener info de la api Spotify
+    // Obtener info de la API de Spotify
     async function getArtist(artists) {
         const artistIds = [];
     
@@ -104,7 +95,7 @@ const Player = ({ songData }) => {
         }
     }
 
-    // Obtener datos de la canción a través de Api Spotify
+    // Obtener datos de la canción a través de la API de Spotify
     async function getSongAudio(songID) {
         const url = `https://spotify23.p.rapidapi.com/tracks/?ids=${songID}`;
         const options = {
@@ -118,31 +109,38 @@ const Player = ({ songData }) => {
         try {
             const response = await fetch(url, options);
             const result = await response.json();
-            console.log(result)
-            setAudioUrl(result.tracks[0].preview_url);
-            getArtist(result.tracks[0].album.artists);
-            setAlbum({
+            console.log(result);
+
+            // Guardar URL de audio
+            const previewUrl = result.tracks[0].preview_url;
+            setAudioUrl(previewUrl);
+
+            // Guardar info de artistas y álbum
+            const albumData = {
                 albumId: result.tracks[0].album.id,
                 album_type: result.tracks[0].album.album_type,
                 name: result.tracks[0].album.name,
                 release_date: result.tracks[0].album.release_date,
                 total_tracks: result.tracks[0].album.total_tracks,
                 images: result.tracks[0].album.images,
-                artists: artists
-            })
+                artists: result.tracks[0].album.artists
+            };
+            setAlbum(albumData);
+            getArtist(result.tracks[0].album.artists);
+
+            // Crear datos de la canción
             const datosCancion = {
                 songId: songID,
                 name: result.tracks[0].name,
-                songUrl: audioUrl,
+                songUrl: previewUrl,
                 popularity: result.tracks[0].popularity,
                 track_number: result.tracks[0].track_number,
                 addedBy: userId,
-                album: album
-            }
+                album: albumData
+            };
             console.log('==============');
             console.log(datosCancion);
             createNewSong(datosCancion);
-            
         } catch (error) {
             console.error(error);
         }
@@ -169,7 +167,7 @@ const Player = ({ songData }) => {
             console.error('Error al crear la canción en el backend:', error);
         }
     }
-    
+
     async function checkSongExists(songID) {
         try {
             const response = await fetch(`http://localhost:4000/songs/exists/${songID}`, {
@@ -193,22 +191,17 @@ const Player = ({ songData }) => {
         }
     }
 
-    // Handle de si la canción existe o no
     async function handleExistingSong(songID) {
         const exists = await checkSongExists(songID);
 
-        // Si existe haremos una peticion a la Base de Datos
         if (exists) {
             console.log('La canción ya existe.');
-            // Array con los datos 
-        } else { // Si no, Buscaremos por la api de Spotify y guardaremos los datos en la DB
+        } else {
             getSongAudio(songID);
         }
     }
-    
 
     const handleLike = async () => {
-
         try {
             const response = await fetch('http://localhost:4000/favorites/add', {
                 method: 'POST',
@@ -221,7 +214,6 @@ const Player = ({ songData }) => {
                     songData: {
                         nombre: nombre,
                         portada: portada,
-                        // Añadir otros datos necesarios de la canción
                     },
                 }),
             });
@@ -255,8 +247,7 @@ const Player = ({ songData }) => {
                 </Grid>
                 <Grid item>
                     <button onClick={handleLike}>
-                        
-                       
+                        {/* Like button content */}
                     </button>
                 </Grid>
             </Grid>
