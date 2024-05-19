@@ -9,6 +9,10 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { CardActionArea, CircularProgress } from '@mui/material';
 import Profile from './Profile';
+import Input from '@mui/material/Input';
+import FormControl from '@mui/material/FormControl';
+import InputAdornment from '@mui/material/InputAdornment';
+import InputLabel from '@mui/material/InputLabel';
 
 const SearchBar = ({ onSongData }) => {
     const [cancion, setCancion] = useState("");
@@ -24,7 +28,7 @@ const SearchBar = ({ onSongData }) => {
         const options = {
             method: 'GET',
             headers: {
-                'X-RapidAPI-Key': 'f3a0d03207msh780ffdd4dfe3e9bp1f5e5ajsn4f6c81338766',
+                'X-RapidAPI-Key': 'b6f92e1a57mshc52dbe3485039b8p13426fjsnf6bb2b8240c7',
                 'X-RapidAPI-Host': 'spotify23.p.rapidapi.com'
             }
         };
@@ -70,14 +74,23 @@ const SearchBar = ({ onSongData }) => {
         <Box sx={{ width: '100%', height: '100%' }}>
             <form onSubmit={handleSearch}>
                 <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                    <SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-                    <TextField 
+                    {/* <TextField 
                         id="input-with-sx" 
                         label="Search Something..." 
-                        variant="standard" 
+                        fullWidth
                         value={cancion} 
                         onChange={e => setCancion(e.target.value)} 
-                    />
+                    /> */}
+                    <FormControl fullWidth sx={{ m: 1 }} variant="standard">
+                        <InputLabel htmlFor="standard-adornment-amount">Search</InputLabel>
+                        <Input
+                            id="standard-adornment-amount"
+                            fullWidth
+                            value={cancion} 
+                            onChange={e => setCancion(e.target.value)} 
+                            startAdornment={<InputAdornment position="start"><SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} /></InputAdornment>}
+                        />
+                    </FormControl>
                 </Box>
             </form>
             {loading ? ( // Mostrar un spinner de carga mientras la petición está en curso

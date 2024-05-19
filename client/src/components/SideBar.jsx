@@ -35,7 +35,6 @@ const SideBar = () => {
     const sideBarStyles = {
         backgroundColor: 'whitesmoke',
         height: '100%',
-        borderRadius: '25px',
         boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)'
     };
 

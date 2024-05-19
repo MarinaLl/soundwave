@@ -47,11 +47,11 @@ const Layout = ({ children }) => {
     <React.Fragment>
     <CssBaseline />
       {isLargeScreen ? (
-        <Grid container columnSpacing={3} sx={{ backgroundImage: 'linear-gradient(#f2eefa, #f4e8f8, #ead6fa)', margin: '0px', height: '100vh' }}>
-          <Grid item lg={2} p={3}>
+        <Grid container sx={{ backgroundImage: 'linear-gradient(#f2eefa, #f4e8f8, #ead6fa)', margin: '0px', height: '100vh' }}>
+          <Grid item lg={2}>
             <SideBar />
           </Grid>
-          <Grid container lg={9} p={3}>
+          <Grid container lg={10} p={3}>
             <Grid item lg={12} sx={{maxHeight: 'calc(100vh - 8rem)', overflowY: 'auto', scrollbarColor: '#5A5BEF transparent'}}>
               {childrenWithProps}
             </Grid>
