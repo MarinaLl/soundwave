@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 
@@ -78,7 +78,7 @@ const Playlists = () => {
                 }}
                 >
               {playlists.map((playlist) => (
-                    <Paper elevation={0} key={playlist._id} style={{backgroundColor: 'transparent'}}> {playlist.name}</Paper>
+                    <Paper elevation={0} key={playlist._id} style={{backgroundColor: 'transparent'}} component={Link} to={`/playlist/${playlist._id}`}> {playlist.name}</Paper>
                 ))}
             </Box>
           )}
