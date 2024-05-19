@@ -9,14 +9,22 @@ router.get('/all/:userId', async (req, res) => {
       const userId = req.params.userId;
 
       // Buscar todas las canciones favoritas del usuario
-      const favoriteSongs = await FavoriteSong.find({ userId });
+      const favoriteSongs = await FavoriteSong.find({ userId }).populate({
+          path: 'songId',
+          populate: {
+              path: 'album',
+              populate: {
+                  path: 'artists'
+              }
+          }
+      });
 
       // Crear un array para almacenar los datos de las canciones favoritas
       let favoriteSongsData = [];
 
-      // Iterar sobre las canciones favoritas y buscar sus datos completos
+      // Iterar sobre las canciones favoritas y extraer sus datos completos
       for (const favorite of favoriteSongs) {
-          const song = await Song.findOne({ _id: favorite.songId });
+          const song = favorite.songId;
           if (song) {
               favoriteSongsData.push(song);
           }

@@ -80,6 +80,8 @@ const Layout = ({ children }) => {
                 
               />
               <BottomNavigationAction
+                component={Link}
+                to="/search"
                 label="Search"
                 value="Search"
                 icon={<SearchIcon />}

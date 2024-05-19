@@ -19,6 +19,7 @@ function App() {
     <div className="App">
         <Routes>
           <Route path="/" element={<Layout><SearchBar /></Layout>} />
+          <Route path="search" element={<Layout><SearchBar /></Layout>} />
           <Route path="explore" element={<Layout><Explore /></Layout>} />
           <Route path="podcasts" element={<Layout><Podcasts /></Layout>}></Route>
           <Route path="events" element={<Layout><Concerts /></Layout>}></Route>

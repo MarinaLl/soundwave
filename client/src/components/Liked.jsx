@@ -4,7 +4,7 @@ import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import { useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 
-const Liked = () => {
+const Liked = ({ onSongData }) => {
     const [favoriteSongs, setFavoriteSongs] = useState([]);
     const [userId, setUserId] = useState('');
     const navigate = useNavigate();
@@ -48,17 +48,29 @@ const Liked = () => {
         fetchFavoriteSongs();
     }, [userId]);
 
+    // Función para manejar el clic en una canción
+    function handleSongClick(cancionID) {
+        console.log('click')
+        const cancionSeleccionada = {cancionID };
+        //setCancionSeleccionada(cancionSeleccionada);
+        
+        if (typeof onSongData === 'function') {
+            console.log(cancionID)
+            onSongData(cancionSeleccionada)
+        }
+    }
+
     return (
-        <Box p={2} style={{ backgroundColor: 'whitesmoke', borderRadius: '10px', boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)' }}>
-            <Typography variant="h5" gutterBottom>Mis Canciones Favoritas</Typography>
+        <Box p={2} >
+            <Typography variant="h5" gutterBottom>Liked Songs</Typography>
             <Grid container spacing={2}>
                 {favoriteSongs.map(song => (
-                    <Grid item key={song._id}>
+                    <Grid item key={song._id} xs={12} onClick={() => handleSongClick(song.songId)}>
                         <Box display="flex" alignItems="center">
-                            <Typography variant="body1">{song.name}</Typography>
-                            <IconButton aria-label="liked">
-                                <FavoriteRoundedIcon />
-                            </IconButton>
+                            {console.log(song)}
+                            <img src={song.album.images[2].url} alt="" srcset="" />
+                            <Typography variant="body1">{song.name} - {song.album.name}</Typography>
+                            
                         </Box>
                     </Grid>
                 ))}

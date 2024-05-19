@@ -4,6 +4,13 @@ import Grid from '@mui/material/Grid';
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
 import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
+import PlaylistAddRoundedIcon from '@mui/icons-material/PlaylistAddRounded';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemIcon from '@mui/material/ListItemIcon';
 
 const Player = ({ songData }) => {
     const [userId, setUserId] = useState('');
@@ -50,16 +57,17 @@ const Player = ({ songData }) => {
         }
     }, [songData]);
 
-    // useEffect(() => {
-    //     handleExistingFavouriteSong(cancionID);
-    // }, [like]);
+    useEffect(() => {
+        handleExistingFavouriteSong(cancionID);
+        console.log('cambio canción');
+    }, [cancionID]);
 
     // Recargar la etiqueta audio para que suene la canción nueva
     useEffect(() => {
         if (audioRef.current) {
             audioRef.current.load(); // Recargar el audio cuando cambie la URL
         }
-    }, [audioUrl]);
+    }, [audioUrl, existSongData.songUrl]);
 
     // Obtener info de la API de Spotify
     async function getArtist(artists) {
@@ -219,6 +227,7 @@ const Player = ({ songData }) => {
         } else {
             getSongAudio(songID);
         }
+        getSongDetails(songID);
     }
 
     const handleLike = async () => {
@@ -299,6 +308,18 @@ const Player = ({ songData }) => {
             return false; // Indica que hubo un error al eliminar la canción de favoritos
         }
     };
+
+
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
     
     
     return (
@@ -330,13 +351,50 @@ const Player = ({ songData }) => {
                     )}
                 </Grid>
                 <Grid item>
+                    {}
                     <audio ref={audioRef} controls>
+                        { existSongData && <source src={existSongData.songUrl} type="audio/mpeg" /> }
                         <source src={audioUrl} type="audio/mpeg" />
                         Tu navegador no soporta la etiqueta de audio.
                     </audio>
                 </Grid>
                 <Grid item>
-                    
+                    <div>
+                        {/* <Button
+                            id="basic-button"
+                            aria-controls={open ? 'basic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                            onClick={handleClick}
+                        >
+                        </Button> */}
+                        <IconButton 
+                            aria-controls={open ? 'basic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined} 
+                            onClick={handleClick}>
+                            <MoreVertRoundedIcon />
+                                
+                        </IconButton>
+                        <Menu
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                            'aria-labelledby': 'basic-button',
+                            }}
+                        >
+                            <MenuItem onClick={handleClose}>
+                                <ListItemIcon>
+                                    <PlaylistAddRoundedIcon />
+                                </ListItemIcon>
+                                <ListItemText>Add To Playlist</ListItemText>
+                            </MenuItem>
+                            <MenuItem onClick={handleClose}>My account</MenuItem>
+                            <MenuItem onClick={handleClose}>Logout</MenuItem>
+                        </Menu>
+                    </div>
                 </Grid>
             </Grid>
         </Box>
