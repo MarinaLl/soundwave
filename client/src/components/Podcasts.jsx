@@ -18,7 +18,7 @@ const Podcasts = () => {
         const options = {
             method: 'GET',
             headers: {
-                'X-RapidAPI-Key': 'f3a0d03207msh780ffdd4dfe3e9bp1f5e5ajsn4f6c81338766',
+                'X-RapidAPI-Key': 'b6f92e1a57mshc52dbe3485039b8p13426fjsnf6bb2b8240c7',
                 'X-RapidAPI-Host': 'spotify23.p.rapidapi.com'
             }
         };
