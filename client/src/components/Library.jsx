@@ -7,6 +7,8 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Playlists from './Playlists';
 import Profile from "./Profile";
+import Liked from "./Liked";
+import { Paper } from "@mui/material";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -57,7 +59,7 @@ export default function BasicTabs() {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    setUserId(data.username);
+                    setUserId(data.user);
                 } else {
                     throw new Error('Error al obtener la información del perfil');
                 }
@@ -87,7 +89,7 @@ export default function BasicTabs() {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        
+        <Paper elevation={0} key={userId} style={{backgroundColor: 'transparent'}} component={Link} to={`/favSongs`}>Liked Songs</Paper>
         <Playlists />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>

@@ -3,6 +3,7 @@ import { Box } from "@mui/material";
 import Grid from '@mui/material/Grid';
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import FavoriteRoundedIcon from '@mui/icons-material/FavoriteRounded';
+import IconButton from '@mui/material/IconButton';
 
 const Player = ({ songData }) => {
     const [userId, setUserId] = useState('');
@@ -13,6 +14,8 @@ const Player = ({ songData }) => {
     const audioRef = useRef(null);
     const [album, setAlbum] = useState({});
     const [artists, setArtists] = useState([]);
+    const [like, setLike] = useState();
+    const [existSongData, setExistSongData] = useState({});
     
     // Obtener Usuario
     useEffect(() => {
@@ -46,6 +49,10 @@ const Player = ({ songData }) => {
             handleExistingSong(songData.cancionID);
         }
     }, [songData]);
+
+    // useEffect(() => {
+    //     handleExistingFavouriteSong(cancionID);
+    // }, [like]);
 
     // Recargar la etiqueta audio para que suene la canción nueva
     useEffect(() => {
@@ -182,38 +189,86 @@ const Player = ({ songData }) => {
         }
     }
 
+    const getSongDetails = async (songId) => {
+        try {
+          const response = await fetch(`http://localhost:4000/songs/${songId}`);
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log("~~~~~~~~")
+            console.log(data.song); // Aquí tendrás todos los datos de la canción
+            setExistSongData(data.song);
+            return data.song; // Retorna los datos de la canción
+          } else {
+            const error = await response.json();
+            console.error(error.message); // Mensaje de error
+            return null; // Retorna null si hay un error
+          }
+        } catch (error) {
+          console.error('Error al obtener los detalles de la canción:', error);
+          return null; // Retorna null en caso de excepción
+        }
+      };
+
     async function handleExistingSong(songID) {
         const exists = await checkSongExists(songID);
 
         if (exists) {
             console.log('La canción ya existe.');
+            getSongDetails(songID);
         } else {
             getSongAudio(songID);
         }
     }
 
     const handleLike = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/like/check/${userId}/${cancionID}`);
+    
+                if (response.ok) {
+                    const result = await response.json();
+                    return result.isFavorite;
+
+                } else {
+                    //await addSongToFavorites();
+                    
+                }
+            } catch (error) {
+                console.error('Error al verificar la canción en favoritos:', error);
+            }
+        
+    };
+
+    async function handleExistingFavouriteSong() {
+        const exists = await handleLike(cancionID);
+
+        if (exists) {
+            removeFavoriteSong(userId, cancionID);
+            setLike(false);
+        } else {
+            addSongToFavorites();
+            setLike(true);
+        }
+    }
+    
+    const addSongToFavorites = async () => {
         try {
-            const response = await fetch('http://localhost:4000/favorites/add', {
+            const addResponse = await fetch('http://localhost:4000/like/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    userId,
+                    userId: userId,
                     songId: cancionID,
-                    songData: {
-                        nombre: nombre,
-                        portada: portada,
-                    },
                 }),
             });
-
-            if (response.ok) {
-                const result = await response.json();
+    
+            if (addResponse.ok) {
+                const result = await addResponse.json();
                 console.log(result.message);
             } else {
-                const error = await response.json();
+                const error = await addResponse.json();
                 console.error(error.message);
             }
         } catch (error) {
@@ -221,6 +276,31 @@ const Player = ({ songData }) => {
         }
     };
 
+    const removeFavoriteSong = async (userId, songId) => {
+        try {
+            const response = await fetch(`http://localhost:4000/like/remove/${userId}/${songId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data.message); // Mensaje de éxito
+                return true; // Indica que se eliminó la canción de favoritos correctamente
+            } else {
+                const error = await response.json();
+                console.error(error.message); // Mensaje de error
+                return false; // Indica que hubo un error al eliminar la canción de favoritos
+            }
+        } catch (error) {
+            console.error('Error al eliminar la canción de favoritos:', error);
+            return false; // Indica que hubo un error al eliminar la canción de favoritos
+        }
+    };
+    
+    
     return (
         <Box p={2} style={{ backgroundColor: 'whitesmoke', height: '100%', borderRadius: '10px', boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', width: '100%' }}>
             <Grid container>
@@ -228,7 +308,26 @@ const Player = ({ songData }) => {
                     {portada && <img src={portada} alt="Portada del álbum" />}
                 </Grid>
                 <Grid item>
-                    <p>{nombre}</p>
+                    {existSongData && existSongData.album && (
+                        <Box>
+                            <p>{existSongData.name} - {existSongData.album.name}
+                            <IconButton aria-label="like" onClick={handleExistingFavouriteSong}>
+                                { like ? (
+                                        <FavoriteRoundedIcon />
+                                    ) : (
+                                        <FavoriteBorderRoundedIcon />
+                                    )
+                                }
+                            </IconButton>
+                            </p>
+                            
+                            <p>
+                                {existSongData.album.artists.map((artist) => (
+                                    <span key={artist.artistId}>{artist.name}</span>
+                                ))}
+                            </p>
+                        </Box>
+                    )}
                 </Grid>
                 <Grid item>
                     <audio ref={audioRef} controls>
@@ -237,9 +336,7 @@ const Player = ({ songData }) => {
                     </audio>
                 </Grid>
                 <Grid item>
-                    <button onClick={handleLike}>
-                        {/* Like button content */}
-                    </button>
+                    
                 </Grid>
             </Grid>
         </Box>

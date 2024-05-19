@@ -91,6 +91,7 @@ const SearchBar = ({ onSongData }) => {
                             startAdornment={<InputAdornment position="start"><SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} /></InputAdornment>}
                         />
                     </FormControl>
+                    <Profile />
                 </Box>
             </form>
             {loading ? ( // Mostrar un spinner de carga mientras la petición está en curso
@@ -132,7 +133,9 @@ const SearchBar = ({ onSongData }) => {
                     </Grid>
                 </>
             ) : (
-                <Profile />
+                <Box>
+                    Home page
+                </Box>
             )}
         </Box>
     );

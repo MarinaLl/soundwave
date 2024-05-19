@@ -86,12 +86,6 @@ const Layout = ({ children }) => {
               />
               <BottomNavigationAction
                 component={Link}
-                to="/playlists"
-                label="Playlists" 
-                value="Playlists" 
-                icon={<PlaylistPlayRoundedIcon />} />
-              <BottomNavigationAction
-                component={Link}
                 to="/library"
                 label="My library" 
                 value="My Library" 

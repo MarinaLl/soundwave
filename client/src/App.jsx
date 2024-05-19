@@ -10,6 +10,7 @@ import Profile from './components/Profile';
 import Library from './components/Library';
 import Playlists from './components/Playlists';
 import Playlist from './components/Playlist';
+import Liked from './components/Liked';
 import {  Routes, Route , Link} from "react-router-dom";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <Route path="library" element={<Layout><Library /></Layout>}></Route>
           <Route path="playlists" element={<Layout><Playlists /></Layout>}></Route>
           <Route path="playlist/:playlistId" element={<Layout><Playlist /></Layout>}></Route>
+          <Route path="favSongs" element={<Layout><Liked /></Layout>}></Route>
         </Routes>
     </div>
   );

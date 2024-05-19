@@ -62,4 +62,29 @@ router.get('/exists/:songId', async (req, res) => {
   }
 });
 
+// Ruta para obtener todos los datos de una canción
+router.get('/:songId', async (req, res) => {
+  try {
+    const { songId } = req.params;
+
+    // Buscar la canción por su ID
+    const song = await Song.findOne({ songId: songId }).populate({
+      path: 'album',
+      populate: {
+        path: 'artists',
+        model: 'Artist'
+      }
+    }).populate('addedBy', 'username');
+
+    if (!song) {
+      return res.status(404).json({ message: 'Canción no encontrada.' });
+    }
+
+    res.status(200).json({ song });
+  } catch (error) {
+    console.error('Error al obtener los datos de la canción:', error);
+    res.status(500).json({ message: 'Error interno del servidor.' });
+  }
+});
+
 module.exports = router;
