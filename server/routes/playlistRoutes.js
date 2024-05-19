@@ -98,7 +98,26 @@ router.get('/all/:userId', async (req, res) => {
     res.status(500).json({ message: 'Error interno del servidor.' });
   }
 });
-  
+
+// Ruta para obtener la información de una playlist específica
+router.get('/:playlistId', async (req, res) => {
+  try {
+    const { playlistId } = req.params;
+
+    // Buscar la playlist por su ID y populando las canciones asociadas
+    const playlist = await Playlist.findById(playlistId).populate('songs');
+
+    if (!playlist) {
+      return res.status(404).json({ message: 'Playlist not found' });
+    }
+
+    res.status(200).json(playlist);
+  } catch (error) {
+    console.error('Error al obtener la playlist:', error);
+    res.status(500).json({ message: 'Error interno del servidor.' });
+  }
+});
+
 
 // Otras rutas relacionadas con las playlists...
 
