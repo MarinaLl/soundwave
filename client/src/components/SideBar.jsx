@@ -23,6 +23,10 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
+import IconButton from '@mui/material/IconButton';
 
 const SideBar = () => {
     const [userId, setUserId] = useState('');
@@ -143,6 +147,10 @@ const SideBar = () => {
         }
     };
 
+    function handleRemovePlaylist() {
+        console.log('click en eliminar la playlist');
+    }
+
     return (
         <Box style={sideBarStyles}>
             <Typography variant="h4" p={3} sx={{color: '#5A5BEF', fontFamily: 'Lobster'}}>
@@ -231,6 +239,9 @@ const SideBar = () => {
                                         <PlaylistPlayRoundedIcon />
                                     </ListItemIcon>
                                     <ListItemText primary={playlist.name} />
+                                    <IconButton onClick={handleRemovePlaylist}>
+                                        <PlaylistPlayRoundedIcon />
+                                    </IconButton>
                                 </ListItemButton>
                             ))}
                         </List>

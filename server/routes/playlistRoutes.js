@@ -105,7 +105,16 @@ router.get('/:playlistId', async (req, res) => {
     const { playlistId } = req.params;
 
     // Buscar la playlist por su ID y populando las canciones asociadas
-    const playlist = await Playlist.findById(playlistId).populate('songs');
+    const playlist = await Playlist.findById(playlistId)
+      .populate({
+        path: 'songs',
+        populate: {
+          path: 'album',
+          populate: {
+            path: 'artist' // Popula los artistas dentro de los álbumes
+          }
+        }
+      });
 
     if (!playlist) {
       return res.status(404).json({ message: 'Playlist not found' });
