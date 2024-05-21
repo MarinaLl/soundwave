@@ -543,7 +543,7 @@ const Player = ({ songData }) => {
                         Tu navegador no soporta la etiqueta de audio.
                     </audio>
                 </Grid>
-                <Grid item xs={6} sx={{alignSelf: 'flex-end'}}>
+                <Grid item lg={6} xs={12} sx={{alignSelf: 'flex-end'}}>
                     <Grid container>
                         <Grid item xs={12} textAlign={"center"}>
                             <IconButton onClick={togglePlayPause} sx={{padding: 0}}>
