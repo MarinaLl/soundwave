@@ -2,7 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
+import { CardActionArea } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
+import IconButton from '@mui/material/IconButton';
+import PlaylistRemoveRoundedIcon from '@mui/icons-material/PlaylistRemoveRounded';
+import PlaylistPlayRoundedIcon from '@mui/icons-material/PlaylistPlayRounded';
 
 const Playlists = () => {
     const [userId, setUserId] = useState('');
@@ -34,6 +42,30 @@ const Playlists = () => {
     fetchProfile();
   }, [navigate]);
 
+    
+
+    const handleRemovePlaylist = async (playlistId) => {
+        try {
+            const response = await fetch(`http://localhost:4000/playlists/del/${playlistId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            });
+        
+            if (response.ok) {
+            const data = await response.json();
+            console.log(data.message); // Mensaje de éxito
+            // Aquí puedes agregar cualquier lógica adicional que desees ejecutar después de eliminar la playlist
+            } else {
+            const errorData = await response.json();
+            console.error('Error:', errorData.message); // Mensaje de error
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
     useEffect(() => {
         const fetchPlaylists = async () => {
             try {
@@ -58,29 +90,33 @@ const Playlists = () => {
         if (userId) {
             fetchPlaylists();
         }
-    }, [userId]);
-  
+    }, [userId, handleRemovePlaylist]);
+
     return (
         <>
-          {/* <h1>Playlists</h1> */}
           {playlists.length === 0 ? (
-            <p>No tienes playlists.</p>
+            <p>There are no more playlists.</p>
           ) : (
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    '& > :not(style)': {
-                    m: 1,
-                    width: '100%',
-                    height: 64,
-                    },
-                }}
-                >
-              {playlists.map((playlist) => (
-                    <Paper elevation={0} key={playlist._id} style={{backgroundColor: 'transparent'}} component={Link} to={`/playlist/${playlist._id}`}> {playlist.name}</Paper>
-                ))}
-            </Box>
+            <Grid container>
+
+                {playlists.map((playlist) => (
+                    <Grid item lg={3} xs={6}>
+
+                        <Card sx={{ maxWidth: 345 }} key={playlist._id} >
+                            <CardActionArea>
+                                <CardContent>
+                                    <Typography variant="h6" component={Link} to={`/playlist/${playlist._id}`} style={{display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: 'black'}}>
+                                        {playlist.name}
+                                        <IconButton onClick={() => handleRemovePlaylist(playlist._id)}>
+                                            <PlaylistRemoveRoundedIcon />   
+                                        </IconButton>
+                                    </Typography>
+                                </CardContent>
+                            </CardActionArea>
+                        </Card>
+                      </Grid>
+                  ))}
+            </Grid>
           )}
         </>
     ); 

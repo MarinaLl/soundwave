@@ -65,3 +65,62 @@ ul{
 ::-webkit-scrollbar-track {
   background-color: var(--color-primary); /* Cambia el color de fondo del track */
 }
+
+.css-10ufb1t-MuiSlider-root {
+  padding: 8px 0px !important;
+}
+
+#player-range {
+  width: 200px;
+  height: 8px;
+  appearance: none;
+  background-color: #ddd;
+  border-radius: 5px;
+  outline: none;
+  margin-right: 10px;
+  transition: background-color 0.3s;
+}
+
+#player-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background-color: var(--color-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#player-range::-webkit-slider-thumb:hover {
+  background-color: var(--color-primary);
+}
+
+#player-range::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  background-color: var(--color-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#player-range::-moz-range-thumb:hover {
+  background-color: var(--color-primary);
+}
+
+#player-range::-ms-thumb {
+  width: 15px;
+  height: 15px;
+  background-color: var(--color-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#player-range::-ms-thumb:hover {
+  background-color: var(--color-primary);
+}
+
+#player-range:focus {
+  background-color: #ccc;
+}

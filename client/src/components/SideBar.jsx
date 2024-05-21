@@ -27,6 +27,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import IconButton from '@mui/material/IconButton';
+import QueueMusicRoundedIcon from '@mui/icons-material/QueueMusicRounded';
 
 const SideBar = () => {
     const [userId, setUserId] = useState('');
@@ -118,7 +119,7 @@ const SideBar = () => {
         if (userId) {
             fetchPlaylists();
         }
-    }, [userId]);
+    }, [userId, playlists]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -146,10 +147,6 @@ const SideBar = () => {
             console.error('Error al crear la playlist:', error);
         }
     };
-
-    function handleRemovePlaylist() {
-        console.log('click en eliminar la playlist');
-    }
 
     return (
         <Box style={sideBarStyles}>
@@ -212,7 +209,7 @@ const SideBar = () => {
                     </ListItem>
                     <ListItemButton onClick={handleClick}>
                         <ListItemIcon>
-                            <PlaylistPlayRoundedIcon />
+                            <QueueMusicRoundedIcon />
                         </ListItemIcon>
                         <ListItemText primary="Playlists" />
                         {open ? <ExpandLess /> : <ExpandMore />}
@@ -239,9 +236,6 @@ const SideBar = () => {
                                         <PlaylistPlayRoundedIcon />
                                     </ListItemIcon>
                                     <ListItemText primary={playlist.name} />
-                                    <IconButton onClick={handleRemovePlaylist}>
-                                        <PlaylistPlayRoundedIcon />
-                                    </IconButton>
                                 </ListItemButton>
                             ))}
                         </List>

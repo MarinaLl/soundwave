@@ -13,6 +13,7 @@ import Input from '@mui/material/Input';
 import FormControl from '@mui/material/FormControl';
 import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
+import Home from './Home';
 
 const SearchBar = ({ onSongData }) => {
     const [cancion, setCancion] = useState("");
@@ -91,7 +92,6 @@ const SearchBar = ({ onSongData }) => {
                             startAdornment={<InputAdornment position="start"><SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} /></InputAdornment>}
                         />
                     </FormControl>
-                    <Profile />
                 </Box>
             </form>
             {loading ? ( // Mostrar un spinner de carga mientras la petición está en curso
@@ -133,9 +133,7 @@ const SearchBar = ({ onSongData }) => {
                     </Grid>
                 </>
             ) : (
-                <Box>
-                    Home page
-                </Box>
+                <Home/>
             )}
         </Box>
     );

@@ -17,6 +17,18 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import QueueRoundedIcon from '@mui/icons-material/QueueRounded';
+import { useTheme } from '@mui/material/styles';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Chip from '@mui/material/Chip';
+import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
+import PlayCircleRoundedIcon from '@mui/icons-material/PlayCircleRounded';
+import PauseCircleRoundedIcon from '@mui/icons-material/PauseCircleRounded';
+import Slider from '@mui/material/Slider';
+import Wave, { displayName } from 'react-wavify';
 
 const Player = ({ songData }) => {
     const [userId, setUserId] = useState('');
@@ -27,7 +39,7 @@ const Player = ({ songData }) => {
     const audioRef = useRef(null);
     const [album, setAlbum] = useState({});
     const [artists, setArtists] = useState([]);
-    const [like, setLike] = useState();
+    const [like, setLike] = useState(false);
     const [existSongData, setExistSongData] = useState({});
     
     // Obtener Usuario
@@ -64,7 +76,9 @@ const Player = ({ songData }) => {
     }, [songData]);
 
     useEffect(() => {
-        handleExistingFavouriteSong(cancionID);
+        //handleExistingFavouriteSong(cancionID);
+        handleExistingSong(cancionID);
+        setLike(handleLike());
         console.log('cambio canción');
     }, [cancionID]);
 
@@ -303,15 +317,15 @@ const Player = ({ songData }) => {
             if (response.ok) {
                 const data = await response.json();
                 console.log(data.message); // Mensaje de éxito
-                return true; // Indica que se eliminó la canción de favoritos correctamente
+                //return true; // Indica que se eliminó la canción de favoritos correctamente
             } else {
                 const error = await response.json();
                 console.error(error.message); // Mensaje de error
-                return false; // Indica que hubo un error al eliminar la canción de favoritos
+                //return false; // Indica que hubo un error al eliminar la canción de favoritos
             }
         } catch (error) {
             console.error('Error al eliminar la canción de favoritos:', error);
-            return false; // Indica que hubo un error al eliminar la canción de favoritos
+           // return false; // Indica que hubo un error al eliminar la canción de favoritos
         }
     };
     
@@ -327,30 +341,192 @@ const Player = ({ songData }) => {
     };
 
 
-    function handleSubmit() {
-
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const formJson = Object.fromEntries(formData.entries());
+        const selectedPlaylists = personName;
+        console.log('Selected Playlists:', selectedPlaylists);
+        addSongToPlaylists(cancionID, selectedPlaylists);
+        handleClose();
     }
+
+    const addSongToPlaylists = async (songId, playlistIds) => {
+        try {
+            const response = await fetch(`http://localhost:4000/playlists/add-song`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    songId,
+                    playlistIds,
+                }),
+            });
     
+            if (!response.ok) {
+                throw new Error('Failed to add song to playlists');
+            }
+    
+            const data = await response.json();
+            console.log('Success:', data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
+    const theme = useTheme();
+    const [personName, setPersonName] = React.useState([]);
+
+    const handleChange = (event) => {
+        const {
+        target: { value },
+        } = event;
+        setPersonName(
+        // On autofill we get a stringified value.
+        typeof value === 'string' ? value.split(',') : value,
+        );
+    };
+
+    const [playlists, setPlaylists] = useState([]);
+
+    useEffect(() => {
+        const fetchPlaylists = async () => {
+            try {
+                const response = await fetch(`http://localhost:4000/playlists/all/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setPlaylists(data);
+                } else {
+                    console.error('Error al obtener playlists:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error al obtener playlists:', error);
+            }
+        };
+
+        if (userId) {
+            fetchPlaylists();
+        }
+    }, [userId]);
+
+    const ITEM_HEIGHT = 48;
+    const ITEM_PADDING_TOP = 8;
+    const MenuProps = {
+    PaperProps: {
+        style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+        },
+    },
+    };
+
+    const names = playlists;
+
+    function getStyles(name, personName, theme) {
+        return {
+            fontWeight:
+            personName.indexOf(name) === -1
+                ? theme.typography.fontWeightRegular
+                : theme.typography.fontWeightMedium,
+        };
+    }
+
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [duration, setDuration] = useState(0);
+
+    useEffect(() => {
+        const audio = audioRef.current;
+    
+        const handleTimeUpdate = () => {
+          setProgress(audio.currentTime);
+        };
+    
+        const handleLoadedMetadata = () => {
+          setDuration(audio.duration);
+        };
+    
+        audio.addEventListener('timeupdate', handleTimeUpdate);
+        audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    
+        return () => {
+          audio.removeEventListener('timeupdate', handleTimeUpdate);
+          audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+        };
+    }, []);
+
+    const togglePlayPause = () => {
+        const audio = audioRef.current;
+        if (isPlaying) {
+          audio.pause();
+        } else {
+          audio.play();
+        }
+        setIsPlaying(!isPlaying);
+      };
+    
+      const handleProgressChange = (e) => {
+        const audio = audioRef.current;
+        audio.currentTime = e.target.value;
+        setProgress(audio.currentTime);
+      };
+
+      const formatTime = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+      };
+
+      function valuetext(value) {
+        return `${value}°C`;
+      }
+        
     return (
-        <Box p={2} style={{ backgroundColor: 'whitesmoke', height: '100%', borderRadius: '10px', boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', width: '100%' }}>
+        <Box p={2} style={{ backgroundColor: 'whitesmoke', height: '100%', borderRadius: '10px', boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)', width: '100%', position: 'relative' }}>
+            {/* <Wave fill='#E5C4FF'
+                paused={false}
+                style={{ display: 'flex', position: 'absolute', bottom: '0', zIndex: '1' }}
+                options={{
+                    height: 10,
+                    amplitude: 40,
+                    speed: 0.15,
+                    points: 3
+                }}
+            />
+            <Wave fill='#DCADFF'
+                paused={false}
+                style={{ display: 'flex', position: 'absolute', bottom: '0', zIndex: '2' }}
+                options={{
+                    height: 10,
+                    amplitude: 60,
+                    speed: 0.15,
+                    points: 6
+                }}
+            /> */}
             <Grid container>
                 <Grid item>
                     {portada && <img src={portada} alt="Portada del álbum" />}
+                    
                 </Grid>
                 <Grid item>
                     {existSongData && existSongData.album && (
                         <Box>
                             <p>{existSongData.name} - {existSongData.album.name}
-                            <IconButton aria-label="like" onClick={handleExistingFavouriteSong}>
-                                { like ? (
+                                <IconButton aria-label="like" onClick={handleExistingFavouriteSong}>
+                                    {like ? (
                                         <FavoriteRoundedIcon />
                                     ) : (
                                         <FavoriteBorderRoundedIcon />
-                                    )
-                                }
-                            </IconButton>
-                            </p>
-                            
+                                    )}
+                                </IconButton>
+                            </p>                 
                             <p>
                                 {existSongData.album.artists.map((artist) => (
                                     <span key={artist.artistId}>{artist.name}</span>
@@ -360,71 +536,98 @@ const Player = ({ songData }) => {
                     )}
                 </Grid>
                 <Grid item>
-                    {}
-                    <audio ref={audioRef} controls>
+                    
+                    <audio ref={audioRef} >
                         { existSongData && <source src={existSongData.songUrl} type="audio/mpeg" /> }
                         <source src={audioUrl} type="audio/mpeg" />
                         Tu navegador no soporta la etiqueta de audio.
                     </audio>
                 </Grid>
-                <Grid item>
+                <Grid item xs={6} sx={{alignSelf: 'flex-end'}}>
+                    <Grid container>
+                        <Grid item xs={12} textAlign={"center"}>
+                            <IconButton onClick={togglePlayPause} sx={{padding: 0}}>
+                                {isPlaying ? <PauseCircleRoundedIcon  fontSize="large"/> : <PlayCircleRoundedIcon  fontSize="large"/> }
+                            </IconButton>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <audio ref={audioRef} src={existSongData?.songUrl || audioUrl} />
+                            <Box sx={{display: 'flex', justifyContent: 'space-between', fontSize: '12px'}}>
+                                <span>{formatTime(progress)}</span>
+                                <span>-{formatTime(duration - progress)}</span>
+                            </Box>
+                            <Slider
+                                min="0"
+                                max={duration}
+                                value={progress}
+                                aria-label="Temperature"
+                                defaultValue={30}
+                                getAriaValueText={valuetext}
+                                color="secondary"
+                                onChange={handleProgressChange}
+
+                            />
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xs={1}>
                     <div>
-                        {/* <Button
-                            id="basic-button"
-                            aria-controls={open ? 'basic-menu' : undefined}
-                            aria-haspopup="true"
-                            aria-expanded={open ? 'true' : undefined}
-                            onClick={handleClick}
-                        >
-                        </Button> */}
                         <IconButton 
                             aria-controls={open ? 'basic-menu' : undefined}
                             aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined} 
                             onClick={handleClickOpen}>
-                            <MoreVertRoundedIcon />
+                            <QueueRoundedIcon />
                         </IconButton>
-                        <Button variant="outlined" onClick={handleClickOpen}>
-                            <MoreVertRoundedIcon />
-                        </Button>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          component: 'form',
-          onSubmit: (event) => {
-            event.preventDefault();
-            const formData = new FormData(event.currentTarget);
-            const formJson = Object.fromEntries(formData.entries());
-            const email = formJson.email;
-            console.log(email);
-            handleClose();
-          },
-        }}
-      >
-        <DialogTitle>Subscribe</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            To subscribe to this website, please enter your email address here. We
-            will send updates occasionally.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            required
-            margin="dense"
-            id="name"
-            name="email"
-            label="Email Address"
-            type="email"
-            fullWidth
-            variant="standard"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit">Subscribe</Button>
-        </DialogActions>
-      </Dialog>
+                        <Dialog
+                            open={open}
+                            onClose={handleClose}
+                            PaperProps={{
+                                component: 'form',
+                                onSubmit: handleSubmit
+                            }}  
+                        >
+                            <DialogTitle>Add Track To Playlist</DialogTitle>
+                            <DialogContent>
+                            <DialogContentText>
+                                Select one or more playlist to add the track.
+                            </DialogContentText>
+                                <FormControl sx={{ width: '100%', mt: 2 }}>
+                                    <InputLabel id="demo-multiple-chip-label">Playlists</InputLabel>
+                                    <Select
+                                    labelId="demo-multiple-chip-label"
+                                    id="demo-multiple-chip"
+                                    fullWidth
+                                    multiple
+                                    value={personName}
+                                    onChange={handleChange}
+                                    input={<OutlinedInput id="select-multiple-chip" label="Playlists" />}
+                                    renderValue={(selected) => (
+                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                        {selected.map((value) => (
+                                            <Chip key={value} label={value} />
+                                        ))}
+                                        </Box>
+                                    )}
+                                    MenuProps={MenuProps}
+                                    >
+                                        {names.map((name) => (
+                                            <MenuItem
+                                                key={name}
+                                                value={name._id}
+                                                style={getStyles(name, personName, theme)}
+                                            >
+                                            {name.name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleClose}>Cancel</Button>
+                                <Button type="submit"><SaveRoundedIcon />Save</Button>
+                            </DialogActions>
+                        </Dialog>
                     </div>
                 </Grid>
             </Grid>

@@ -89,7 +89,10 @@ export default function BasicTabs() {
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <Paper elevation={0} key={userId} style={{backgroundColor: 'transparent'}} component={Link} to={`/favSongs`}>Liked Songs</Paper>
+        <Box sx={{bgcolor: 'whitesmoke'}} style={{backgroundColor: 'whitesmoke', width: '400px', borderRadius: '10px', height: '80px', boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)'}}>
+          <Paper elevation={0} key={userId} component={Link} to={`/favSongs`}>Liked Songs</Paper>
+        </Box>
+        <h2>Playlists</h2>
         <Playlists />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>

@@ -42,41 +42,36 @@ router.delete('/:playlistId/remove/:songId', async (req, res) => {
       playlist.songs.pull(songId);
       await playlist.save();
   
-      res.status(200).json({ message: 'Canción eliminada de la playlist exitosamente.' });
+      res.status(200).json({ message: 'Song removed successfully from the playlist.' });
     } catch (error) {
       console.error('Error al eliminar canción de la playlist:', error);
       res.status(500).json({ message: 'Error interno del servidor.' });
     }
 });
 
-router.post('/:playlistId/add-song', async (req, res) => {
+router.post('/add-song', async (req, res) => {
     try {
-      const { playlistId } = req.params;
-      const { songId, name, artist, album, songUrl, addedBy } = req.body;
-  
+      const { playlistIds, songId } = req.body;
+
       // Verificar si la canción ya existe en la colección de canciones
       let song = await Song.findOne({ songId });
-  
-      // Si la canción no existe, crear una nueva canción
-      if (!song) {
-        song = await Song.create({ songId, name, artist, album, songUrl, addedBy });
+
+      // Procesar cada playlistId
+      for (const playlistId of playlistIds) {
+          // Encontrar la playlist
+          const playlist = await Playlist.findById(playlistId);
+          if (!playlist) {
+            return res.status(404).json({ message: `Playlist with ID ${playlistId} not found` });
+          }
+
+          // Verificar si la canción ya está en la playlist
+          if (!playlist.songs.some(existingSong => existingSong.equals(song._id))) {
+              // Agregar la canción a la playlist si no existe
+              playlist.songs.push(song._id);
+              await playlist.save();
+          }
       }
-  
-      // Agregar la canción a la playlist
-      const playlist = await Playlist.findById(playlistId);
-      if (!playlist) {
-        return res.status(404).json({ message: 'Playlist not found' });
-      }
-  
-      // Verificar si la canción ya está en la playlist
-      if (playlist.songs.some(existingSong => existingSong.equals(song._id))) {
-        return res.status(400).json({ message: 'Song already exists in the playlist' });
-      }
-  
-      // Agregar la canción a la playlist
-      playlist.songs.push(song);
-      await playlist.save();
-  
+
       res.status(201).json({ message: 'Song added to playlist successfully' });
     } catch (error) {
       console.error('Error adding song to playlist:', error);
@@ -90,7 +85,16 @@ router.get('/all/:userId', async (req, res) => {
     const { userId } = req.params; // Asumiendo que el usuario está en req.user
 
     // Obtener todas las playlists del usuario
-    const playlists = await Playlist.find({ createdBy: userId });
+    const playlists = await Playlist.find({ createdBy: userId })
+      .populate({
+        path: 'songs',
+        populate: {
+          path: 'album',
+          populate: {
+            path: 'artists' // Popula los artistas dentro de los álbumes
+          }
+        }
+      });
 
     res.status(200).json(playlists);
   } catch (error) {
@@ -111,7 +115,7 @@ router.get('/:playlistId', async (req, res) => {
         populate: {
           path: 'album',
           populate: {
-            path: 'artist' // Popula los artistas dentro de los álbumes
+            path: 'artists' // Popula los artistas dentro de los álbumes
           }
         }
       });
@@ -124,6 +128,28 @@ router.get('/:playlistId', async (req, res) => {
   } catch (error) {
     console.error('Error al obtener la playlist:', error);
     res.status(500).json({ message: 'Error interno del servidor.' });
+  }
+});
+
+// Ruta para eliminar una playlist
+router.delete('/del/:playlistId', async (req, res) => {
+  try {
+    const { playlistId } = req.params;
+
+    // Buscar la playlist por su ID
+    const playlist = await Playlist.findById(playlistId);
+
+    if (!playlist) {
+      return res.status(404).json({ message: 'Playlist not found' });
+    }
+
+    // Eliminar la playlist
+    await Playlist.findByIdAndDelete(playlistId);
+
+    res.status(200).json({ message: 'Playlist deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting playlist:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
