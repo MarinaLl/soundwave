@@ -44,7 +44,7 @@ const Explore = () => {
                         if (elemento && elemento.content && elemento.content.data && elemento.content.data.data) {
                             const banner = elemento.content.data.data.cardRepresentation.artwork.sources[0].url;
                             return (
-                                <Grid item xs={2} sm={2} lg={2} xl={2}>
+                                <Grid item xs={6} sm={2} lg={2} xl={2}>
                                      <Card sx={{ maxWidth: 345 }}>
                                         <CardActionArea key={index}>
                                             <CardMedia

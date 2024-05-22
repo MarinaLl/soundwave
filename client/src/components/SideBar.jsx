@@ -28,6 +28,7 @@ import MenuItem from '@mui/material/MenuItem';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import IconButton from '@mui/material/IconButton';
 import QueueMusicRoundedIcon from '@mui/icons-material/QueueMusicRounded';
+import Divider from '@mui/material/Divider';
 
 const SideBar = () => {
     const [userId, setUserId] = useState('');
@@ -217,12 +218,14 @@ const SideBar = () => {
                     
                     <Collapse in={open} timeout="auto" unmountOnExit style={{maxHeight: 200, overflowY: 'auto', scrollbarColor: '#5A5BEF transparent'}}>
                         <List component="div" disablePadding>
+                            <Divider />
                             <ListItemButton sx={{ pl: 4 }} onClick={handleClickOpen}>
                                 <ListItemIcon>
                                     <PlaylistAddRoundedIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="Add Playlist" />
                             </ListItemButton>
+                            <Divider />
                             {playlists.map((playlist) => (
                                 <ListItemButton 
                                     key={playlist._id} 
@@ -240,6 +243,7 @@ const SideBar = () => {
                             ))}
                         </List>
                     </Collapse>
+                    <Divider />
                     <ListItemButton onClick={handleLogout}>
                         <ListItemIcon>
                             <ExitToAppIcon />

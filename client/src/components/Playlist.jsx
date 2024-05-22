@@ -6,20 +6,24 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 import { Box } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import PlaylistRemoveRoundedIcon from '@mui/icons-material/PlaylistRemoveRounded';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
 import Tooltip from '@mui/material/Tooltip';
 import Grid from '@mui/material/Grid';
+import Profile from './Profile';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const Playlist = ({ onSongData }) => {
     const { playlistId } = useParams();
     const [playlistInfo, setPlaylistInfo] = useState(null);
     const [songs, setSongs] = useState([]);
     const [message, setMessage] = useState('');
+
+    const theme = useTheme();
+    // Verifica si la pantalla es grande (lg y xl)
+    const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
 
     useEffect(() => {
         const fetchPlaylist = async () => {
@@ -142,61 +146,99 @@ const Playlist = ({ onSongData }) => {
     return (
         <Box>
             <Grid container>
-                <Grid item lg={6}>
+                <Grid item lg={6} xs={9}>
                     <h1>{playlistInfo.name}</h1>
                 </Grid>
-                <Grid item lg={6}>
-                    
-                </Grid>
-                <Grid item xs={12}>
-                    <p>Creada por: {playlistInfo.createdBy}</p>
+                <Grid item lg={6} xs={3} sx={{textAlign: 'right'}}>
+                    <Profile />
                 </Grid>
             </Grid>
-            {message &&
-                <Alert severity="success">
-                    <AlertTitle>Success</AlertTitle>
-                    {message}
-                </Alert>
-            } {/* Renderiza el mensaje si existe */}
+            
             <TableContainer >
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align='left'>Track</TableCell>
-                            <TableCell align='left'></TableCell>
-                            <TableCell align="left">Album</TableCell>
-                            <TableCell align="left">Artist(s)</TableCell>
-                            <TableCell align="right"></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.length > 0 ? (
-                            rows.map((row) => (
-                                <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 }, '&:hover': {
-                                    backgroundColor: 'rgba(0, 0, 0, 0.1)', }
-                                    , cursor: 'pointer' }} onClick={() => handleSongClick(row.name, row.image, row.songId)}>
-                                    <TableCell component="th" scope="row"><img src={row.image} alt="album cover" style={{borderRadius: '5px'}} /></TableCell>
-                                    <TableCell component="th" scope="row">{row.name}</TableCell>
-                                    <TableCell align="left">{row.album}</TableCell>
-                                    <TableCell align="left">{row.artist}</TableCell>
-                                    <TableCell align="right">
-                                        <Tooltip title="Remove from playlist">
-                                            <IconButton onClick={() => handleRemoveSong(row.id)}>
-                                                <PlaylistRemoveRoundedIcon />
-                                            </IconButton>
-                                        </Tooltip>
+                {isLargeScreen ? (
+                    <Table sx={{ minWidth: 450 }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align='left'>Track</TableCell>
+                                <TableCell align='left'></TableCell>
+                                <TableCell align="left">Album</TableCell>
+                                <TableCell align="left">Artist(s)</TableCell>
+                                <TableCell align="right"></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rows.length > 0 ? (
+                                rows.map((row) => (
+                                    <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 }, '&:hover': {
+                                        backgroundColor: 'rgba(0, 0, 0, 0.1)', }
+                                        , cursor: 'pointer' }} onClick={() => handleSongClick(row.name, row.image, row.songId)}>
+                                        <TableCell component="th" scope="row"><img src={row.image} alt="album cover" style={{borderRadius: '5px'}} /></TableCell>
+                                        <TableCell component="th" scope="row">{row.name}</TableCell>
+                                        <TableCell align="left">{row.album}</TableCell>
+                                        <TableCell align="left">{row.artist}</TableCell>
+                                        <TableCell align="right">
+                                            <Tooltip title="Remove from playlist">
+                                                <IconButton onClick={() => handleRemoveSong(row.id)}>
+                                                    <PlaylistRemoveRoundedIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={5} align="center">
+                                        There are no more tracks.
                                     </TableCell>
                                 </TableRow>
-                            ))
-                        ) : (
+                            )}
+                        </TableBody>
+                    </Table>
+                ) : (
+                    <Table sx={{ minWidth: 380 }} aria-label="simple table">
+                        <TableHead>
                             <TableRow>
-                                <TableCell colSpan={5} align="center">
-                                    No hay canciones en esta playlist.
-                                </TableCell>
+                                <TableCell align='left'>Track</TableCell>
+                                <TableCell align="right">Action</TableCell>
                             </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                        </TableHead>
+                        <TableBody>
+                            {rows.length > 0 ? (
+                                rows.map((row) => (
+                                    <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 }, '&:hover': {
+                                        backgroundColor: 'rgba(0, 0, 0, 0.1)', }
+                                        , cursor: 'pointer' }} onClick={() => handleSongClick(row.name, row.image, row.songId)}>
+                                        <TableCell>
+                                            <div style={{display: 'flex', alignItems: 'center'}}>
+                                                <div>
+                                                    <img src={row.image} alt="album cover" style={{borderRadius: '5px'}} />
+                                                </div>
+                                                <div style={{display: 'flex', flexDirection: 'column', marginLeft: '5px'}}>
+                                                    <span style={{fontWeight: 'bold'}}>{row.name}</span>
+                                                    <span style={{fontSize: '12px'}}>{row.album}</span>
+                                                    <span style={{fontSize: '12px'}}>{row.artist}</span>
+                                                </div>
+                                            </div>
+                                        </TableCell>                
+                                        <TableCell align="right">
+                                            <Tooltip title="Remove from playlist">
+                                                <IconButton onClick={() => handleRemoveSong(row.id)}>
+                                                    <PlaylistRemoveRoundedIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={5} align="center">
+                                        There are no more tracks.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                )}
             </TableContainer>
         </Box>
     );

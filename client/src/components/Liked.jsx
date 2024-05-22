@@ -10,13 +10,19 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import PlayCircleRoundedIcon from '@mui/icons-material/PlayCircleRounded';
 import PlaylistRemoveRoundedIcon from '@mui/icons-material/PlaylistRemoveRounded';
 import Tooltip from '@mui/material/Tooltip';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const Liked = ({ onSongData }) => {
     const [favoriteSongs, setFavoriteSongs] = useState([]);
     const [userId, setUserId] = useState('');
     const navigate = useNavigate();
+    const theme = useTheme();
+    // Verifica si la pantalla es grande (lg y xl)
+    const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -99,41 +105,90 @@ const Liked = ({ onSongData }) => {
     };
 
     return (
-        <Box p={2}>
+        <Box p={1}>
             <h1>Liked Songs</h1>
             <TableContainer >
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align='left'>Track</TableCell>
-                            <TableCell align='left'></TableCell>
-                            <TableCell align="left">Album</TableCell>
-                            <TableCell align="left">Artist(s)</TableCell>
-                            
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.length > 0 ? (
-                            rows.map((row) => (
-                                <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 }, '&:hover': {
-                                    backgroundColor: 'rgba(0, 0, 0, 0.1)', }
-                                    , cursor: 'pointer' }} onClick={() => handleSongClick(row.name, row.image, row.songId)}>
-                                    <TableCell component="th" scope="row"><img src={row.image} alt="album cover" style={{borderRadius: '5px'}} /></TableCell>
-                                    <TableCell component="th" scope="row">{row.name}</TableCell>
-                                    <TableCell align="left">{row.album}</TableCell>
-                                    <TableCell align="left">{row.artist}</TableCell>
-                                    
-                                </TableRow>
-                            ))
-                        ) : (
+                {isLargeScreen ? (
+
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
                             <TableRow>
-                                <TableCell colSpan={5} align="center">
-                                    There are no more liked songs.
-                                </TableCell>
+                                <TableCell align='left'>Track</TableCell>
+                                <TableCell align='left'></TableCell>
+                                <TableCell align="left">Album</TableCell>
+                                <TableCell align="left">Artist(s)</TableCell>
+                                
                             </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+                        </TableHead>
+                        <TableBody>
+                            {rows.length > 0 ? (
+                                rows.map((row) => (
+                                    <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 }, '&:hover': {
+                                        backgroundColor: 'rgba(0, 0, 0, 0.1)', }
+                                        , cursor: 'pointer' }} onClick={() => handleSongClick(row.name, row.image, row.songId)}>
+                                        <TableCell component="th" scope="row"><img src={row.image} alt="album cover" style={{borderRadius: '5px'}} /></TableCell>
+                                        <TableCell component="th" scope="row">{row.name}</TableCell>
+                                        <TableCell align="left">{row.album}</TableCell>
+                                        <TableCell align="left">{row.artist}</TableCell>
+                                        <TableCell align="left">
+                                            <IconButton>
+                                                <PlayCircleRoundedIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={5} align="center">
+                                        There are no more liked songs.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                ):(    
+                    <Table sx={{ minWidth: 380 }} aria-label="simple table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align='left'>Track</TableCell>
+                                <TableCell align="right"></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rows.length > 0 ? (
+                                rows.map((row) => (
+                                    <TableRow key={row.id} sx={{ '&:last-child td, &:last-child th': { border: 0 }, '&:hover': {
+                                        backgroundColor: 'rgba(0, 0, 0, 0.1)', }
+                                        , cursor: 'pointer' }} onClick={() => handleSongClick(row.name, row.image, row.songId)}>
+                                        <TableCell>
+                                        <div style={{display: 'flex', alignItems: 'center'}}>
+                                                <div>
+                                                    <img src={row.image} alt="album cover" style={{borderRadius: '5px'}} />
+                                                </div>
+                                                <div style={{display: 'flex', flexDirection: 'column', marginLeft: '5px'}}>
+                                                    <span style={{fontWeight: 'bold'}}>{row.name}</span>
+                                                    <span style={{fontSize: '12px'}}>{row.album}</span>
+                                                    <span style={{fontSize: '12px'}}>{row.artist}</span>
+                                                </div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            <IconButton>
+                                                <PlayCircleRoundedIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={5} align="center">
+                                        There are no more liked songs.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                )}
             </TableContainer>
         </Box>
     );

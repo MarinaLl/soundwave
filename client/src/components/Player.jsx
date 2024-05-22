@@ -512,13 +512,15 @@ const Player = ({ songData }) => {
             /> */}
             <Grid container>
                 <Grid item>
-                    {portada && <img src={portada} alt="Portada del álbum" />}
+                    {portada && <img src={portada} alt="Portada del álbum" style={{borderRadius: '5px'}} />}
                     
                 </Grid>
                 <Grid item>
                     {existSongData && existSongData.album && (
-                        <Box>
-                            <p>{existSongData.name} - {existSongData.album.name}
+                        <Box sx={{marginLeft: '5px'}}>
+                            <div style={{display: 'flex', alignItems: 'center'}}>
+                                <p className="truncate">{existSongData.name} - {existSongData.album.name}</p>                 
+
                                 <IconButton aria-label="like" onClick={handleExistingFavouriteSong}>
                                     {like ? (
                                         <FavoriteRoundedIcon />
@@ -526,10 +528,19 @@ const Player = ({ songData }) => {
                                         <FavoriteBorderRoundedIcon />
                                     )}
                                 </IconButton>
-                            </p>                 
+
+                                <IconButton 
+                                    className="show"
+                                    aria-controls={open ? 'basic-menu' : undefined}
+                                    aria-haspopup="true"
+                                    aria-expanded={open ? 'true' : undefined} 
+                                    onClick={handleClickOpen}>
+                                    <QueueRoundedIcon />
+                                </IconButton>
+                            </div>
                             <p>
                                 {existSongData.album.artists.map((artist) => (
-                                    <span key={artist.artistId}>{artist.name}</span>
+                                    <span key={artist.artistId} className="truncate">{artist.name}</span>
                                 ))}
                             </p>
                         </Box>
@@ -572,13 +583,13 @@ const Player = ({ songData }) => {
                 </Grid>
                 <Grid item xs={1}>
                     <div>
-                        <IconButton 
+                        {/* <IconButton 
                             aria-controls={open ? 'basic-menu' : undefined}
                             aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined} 
                             onClick={handleClickOpen}>
                             <QueueRoundedIcon />
-                        </IconButton>
+                        </IconButton> */}
                         <Dialog
                             open={open}
                             onClose={handleClose}

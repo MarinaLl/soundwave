@@ -19,8 +19,30 @@
   width: 120px;
 }
 
+@media (max-width: 600px) { /* Ajusta el tamaño según tus necesidades */
+  .truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px; /* Cambia este valor según tu necesidad */
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .show {
+    display: block;
+  }
+}
+
+
 ul{
   list-style-type: none;
+}
+
+.css-i4bv87-MuiSvgIcon-root[data-testid="PlayCircleRoundedIcon"] {
+  fill: var(--color-primary) !important;
 }
 
 .Mui-selected {

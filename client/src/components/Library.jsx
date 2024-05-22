@@ -9,6 +9,12 @@ import Playlists from './Playlists';
 import Profile from "./Profile";
 import Liked from "./Liked";
 import { Paper } from "@mui/material";
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import { CardActionArea } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -50,6 +56,8 @@ export default function BasicTabs() {
     const [userId, setUserId] = useState('');
     const navigate = useNavigate();
 
+   
+
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -81,26 +89,26 @@ export default function BasicTabs() {
             <h1>My Library</h1>
             <Profile />
         </Box>
-      <Box >
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Playlists" {...a11yProps(0)} />
-          <Tab label="Artists" {...a11yProps(1)} />
-          <Tab label="Albums" {...a11yProps(2)} />
-        </Tabs>
-      </Box>
-      <CustomTabPanel value={value} index={0}>
-        <Box sx={{bgcolor: 'whitesmoke'}} style={{backgroundColor: 'whitesmoke', width: '400px', borderRadius: '10px', height: '80px', boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)'}}>
-          <Paper elevation={0} key={userId} component={Link} to={`/favSongs`}>Liked Songs</Paper>
-        </Box>
+        <Card sx={{ maxWidth: 390, margin: '10px 0px' }} >
+            <CardActionArea sx={{display: 'flex'}} component={Link} to={`/favSongs`}>
+                <CardMedia
+                    component="img"
+                    height="64"
+                    image="/images/favSong.png"
+                    alt="green iguana"
+                    style={{width: '64px'}}
+                />
+                <CardContent style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                    <Typography style={{display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: 'black'}}>
+                        Liked Songs
+                    </Typography>
+                </CardContent>
+            </CardActionArea>
+        </Card>
         <h2>Playlists</h2>
         <Playlists />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
-        Item Two
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
-        Item Three
-      </CustomTabPanel>
+   
+      
     </Box>
   );
 }

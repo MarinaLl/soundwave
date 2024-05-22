@@ -97,20 +97,24 @@ const Playlists = () => {
           {playlists.length === 0 ? (
             <p>There are no more playlists.</p>
           ) : (
-            <Grid container>
-
+            <Grid container spacing={3}>
                 {playlists.map((playlist) => (
-                    <Grid item lg={3} xs={6}>
-
-                        <Card sx={{ maxWidth: 345 }} key={playlist._id} >
+                    <Grid item lg={2} md={4} xs={6}>
+                        <Card sx={{ maxWidth: 250 }} key={playlist._id} >
                             <CardActionArea>
-                                <CardContent>
+                                <CardMedia
+                                    component="img"
+                                    height="140"
+                                    image="/images/playlist-banner.png"
+                                    alt="green iguana"
+                                />
+                                <CardContent style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <Typography variant="h6" component={Link} to={`/playlist/${playlist._id}`} style={{display: 'flex', justifyContent: 'space-between', textDecoration: 'none', color: 'black'}}>
                                         {playlist.name}
-                                        <IconButton onClick={() => handleRemovePlaylist(playlist._id)}>
-                                            <PlaylistRemoveRoundedIcon />   
-                                        </IconButton>
                                     </Typography>
+                                    <IconButton onClick={() => handleRemovePlaylist(playlist._id)}>
+                                        <PlaylistRemoveRoundedIcon />   
+                                    </IconButton>
                                 </CardContent>
                             </CardActionArea>
                         </Card>
